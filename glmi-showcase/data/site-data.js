@@ -1,40 +1,40 @@
 window.GLMI_SITE_DATA = {
-  brand: 'GLMI Spark Deck',
+  brand: 'GLMI Project Walkthrough',
   hero: {
-    eyebrow: 'GLMI 712 · Problem Pitch Playground',
-    titleA: '把你的',
-    titleB: 'GLMI 题目',
-    titleC: '做成像真的展示站',
-    desc: '这是一套给 GLMI 使用的欢快静态展示页，重点不是炫技，而是把 problem pitch、课程框架、研究洞察、采访证据和展示逻辑包装得更像一个成熟项目。适合拿去讲、改、继续扩写。',
+    eyebrow: 'Quick intro for friends and teammates',
+    titleA: 'Hey, this is the',
+    titleB: 'project site',
+    titleC: 'I put together for our GLMI idea.',
+    desc: 'I made this page so you can see the logic behind our concept quickly without me having to explain everything from scratch every time. The point is not to make it look like a final startup already exists. The point is to show the problem clearly, explain why it matters, and then link you into the marketplace prototype we can talk through together.',
     stats: [
-      { value: '3', label: '大展示区块' },
-      { value: '8+', label: '可替换内容卡片' },
-      { value: '1', label: 'GitHub Pages 路径' }
+      { value: '3', label: 'core sections' },
+      { value: '1', label: 'market prototype link' },
+      { value: '100%', label: 'presentation-friendly' }
     ],
     highlights: [
-      { title: 'Problem-first', text: '先定义问题，再谈方案，符合 GLMI 老师口味。' },
-      { title: 'Evidence-backed', text: '把观察、访谈、课程框架和数据串起来。' },
-      { title: 'Pitch-ready', text: '内容结构天然适合口头 presentation。' }
+      { title: 'Why this exists', text: 'I wanted one clean place to explain what we are actually building and why.' },
+      { title: 'What to look for', text: 'Focus on the problem, the student need, and how the resale platform fits that gap.' },
+      { title: 'How to use it', text: 'Skim this page first, then jump into the market prototype when you want the product feel.' }
     ]
   },
   overviewCards: [
     {
-      eyebrow: 'Course Fit',
-      title: '这站是按 GLMI 的脑回路写的',
-      text: '不是普通项目 landing page，而是把 sustainable entrepreneurship、problem framing、wicked problem、serendipity 和 stakeholder insight 融进页面结构。',
-      pills: ['Problem Pitch', 'Wicked Problem', 'Sustainability']
+      eyebrow: 'For the team',
+      title: 'This page is basically my walkthrough for you all',
+      text: 'I rewrote the idea into a cleaner structure so it is easier for us to discuss, pitch, and improve together.',
+      pills: ['Clearer framing', 'Easier discussion', 'Team-friendly']
     },
     {
-      eyebrow: 'Presentation Mode',
-      title: '适合直接当演讲辅助页面',
-      text: '每个模块都像一张可展开的 slide，口头汇报时可以边讲边切，不容易乱。',
-      pills: ['Storytelling', 'Flow', 'Visual cue']
+      eyebrow: 'For presentation',
+      title: 'It helps me explain the concept step by step',
+      text: 'Instead of dumping slides or long notes, I can use this as a simple narrative path when I talk through the project.',
+      pills: ['Walkthrough', 'Narrative', 'Pitch support']
     },
     {
-      eyebrow: 'Editable',
-      title: '内容是可替换的',
-      text: '你后面发给我的 GLMI 题目材料、访谈记录、观察笔记，都可以继续塞进这套骨架里。',
-      pills: ['Replaceable', 'Modular', 'GitHub Pages']
+      eyebrow: 'For iteration',
+      title: 'We can keep changing it as the idea gets sharper',
+      text: 'If our framing changes, if the user problem gets refined, or if the prototype evolves, this page can keep up easily.',
+      pills: ['Flexible', 'Editable', 'Fast to update']
     }
   ],
   modules: [
