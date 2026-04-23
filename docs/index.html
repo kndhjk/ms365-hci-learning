@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unicorn NZ · MS365 & HCI 六天速成 · 面试冲刺</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3350;
+      --accent: #4f8ef7;
+      --accent2: #7c5af0;
+      --green: #3ecf8e;
+      --red: #f47067;
+      --yellow: #f0b642;
+      --text: #e2e4ef;
+      --text-dim: #8b8fa8;
+      --radius: 12px;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ─── Header ─── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-weight: 700; font-size: 1.05rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .progress-bar-wrap { flex: 1; max-width: 360px; margin: 0 32px; }
+    .progress-label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 0.78rem; color: var(--text-dim); white-space: nowrap; }
+
+    /* ─── Layout ─── */
+    .layout { display: flex; flex: 1; }
+
+    /* ─── Sidebar ─── */
+    .sidebar { width: 264px; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 12px; overflow-y: auto; flex-shrink: 0; }
+    .sidebar-section { margin-bottom: 20px; }
+    .sidebar-section-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 0 8px; margin-bottom: 6px; }
+    .module-btn { width: 100%; text-align: left; background: none; border: 1px solid transparent; color: var(--text); padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 0.875rem; display: flex; align-items: center; gap: 8px; transition: all 0.15s; margin-bottom: 2px; }
+    .module-btn:hover { background: var(--surface2); }
+    .module-btn.active { background: var(--surface2); border-color: var(--border); }
+    .module-btn.done .si { color: var(--green); }
+    .module-btn.active .si { color: var(--accent); }
+    .si { font-size: 0.75rem; width: 18px; text-align: center; flex-shrink: 0; }
+    .ml { display: flex; flex-direction: column; }
+    .mn { font-weight: 500; }
+    .ms { font-size: 0.7rem; color: var(--text-dim); }
+
+    /* ─── Main ─── */
+    .main { flex: 1; padding: 36px 48px; max-width: 880px; overflow-y: auto; }
+
+    /* ─── Step indicator ─── */
+    .step-ind { display: flex; align-items: center; gap: 6px; margin-bottom: 28px; flex-wrap: wrap; }
+    .pip { height: 3px; flex: 1; min-width: 24px; border-radius: 99px; background: var(--border); transition: background 0.3s; }
+    .pip.done { background: var(--green); }
+    .pip.active { background: var(--accent); }
+    .smet { font-size: 0.78rem; color: var(--text-dim); margin-left: 6px; white-space: nowrap; }
+
+    /* ─── Card ─── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 20px; }
+    .card h2 { font-size: 1.35rem; margin-bottom: 10px; }
+    .card h3 { font-size: 1.0rem; color: var(--accent); margin: 20px 0 10px; }
+    .card p { line-height: 1.75; color: var(--text-dim); margin-bottom: 14px; }
+    .card ul { list-style: none; margin: 10px 0; }
+    .card li { padding: 6px 0 6px 18px; position: relative; color: var(--text-dim); line-height: 1.65; }
+    .card li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+    .card li strong { color: var(--text); }
+
+    /* ─── Callout ─── */
+    .callout { background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 14px 0; font-size: 0.9rem; line-height: 1.65; }
+    .callout.green { border-color: var(--green); }
+    .callout.yellow { border-color: var(--yellow); }
+    .callout.red { border-color: var(--red); }
+    .callout.unicorn { border-color: #f0b642; background: rgba(240,182,66,0.08); }
+
+    /* ─── Code/Terminal ─── */
+    .code-block, .terminal { background: #0d1117; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 14px 0; }
+    .code-header, .terminal-header { background: var(--surface2); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .code-lang { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+    .copy-btn { background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 9px; border-radius: 5px; cursor: pointer; font-size: 0.72rem; transition: all 0.15s; }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .terminal-header { gap: 6px; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+    .tt { padding: 16px 20px; font-family: 'Cascadia Code','Fira Code',Consolas,monospace; font-size: 0.85rem; line-height: 1.75; white-space: pre-wrap; }
+    .tl { color: #8b8fa8; }
+    .tl.cmd { color: #e2e4ef; }
+    .tl.cmd::before { content: '$ '; color: var(--green); }
+    .tl.out { color: #79c0ff; }
+    .tl.ok { color: var(--green); }
+    .tl.err { color: var(--red); }
+
+    /* ─── Quiz ─── */
+    .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 28px; margin: 14px 0; }
+    .quiz-q { font-size: 0.98rem; font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+    .quiz-opt:hover:not(.disabled) { border-color: var(--accent); }
+    .quiz-opt.selected { border-color: var(--accent); background: rgba(79,142,247,0.1); }
+    .quiz-opt.correct { border-color: var(--green); background: rgba(62,207,142,0.1); }
+    .quiz-opt.wrong { border-color: var(--red); background: rgba(244,112,103,0.1); }
+    .quiz-opt.disabled { cursor: default; opacity: 0.65; }
+    .ol { width: 24px; height: 24px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }
+    .qfb { margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-size: 0.875rem; display: none; }
+    .qfb.show { display: block; }
+    .qfb.correct { background: rgba(62,207,142,0.12); border: 1px solid var(--green); color: var(--green); }
+    .qfb.wrong { background: rgba(244,112,103,0.12); border: 1px solid var(--red); color: var(--red); }
+
+    /* ─── Nav ─── */
+    .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .btn { padding: 9px 22px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text-dim); }
+    .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-success { background: var(--green); color: #0f1117; }
+    .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    /* ─── Misc ─── */
+    code { background: var(--surface2); padding: 2px 5px; border-radius: 4px; font-family: 'Cascadia Code',monospace; font-size: 0.84em; color: #79c0ff; }
+
+    /* ─── Grid ─── */
+    .cgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+    .ci { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+    .ci .term { font-weight: 600; font-size: 0.85rem; margin-bottom: 3px; color: var(--accent); }
+    .ci .desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; }
+
+    /* ─── Cheatsheet ─── */
+    .cheatsheet { background: var(--surface); border: 1px solid var(--yellow); border-radius: var(--radius); padding: 24px 28px; margin: 14px 0; }
+    .cheatsheet h3 { color: var(--yellow); margin-top: 0; }
+    .cs-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.875rem; }
+    .cs-table th { text-align: left; padding: 8px 12px; background: var(--surface2); border-bottom: 1px solid var(--border); color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cs-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }
+    .cs-table tr:last-child td { border-bottom: none; }
+    .cs-table td:first-child { color: var(--text); font-weight: 500; }
+
+    /* ─── Completion ─── */
+    .done-screen { text-align: center; padding: 48px 32px; }
+    .done-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .done-screen h2 { font-size: 1.6rem; margin-bottom: 10px; }
+    .done-screen p { color: var(--text-dim); max-width: 460px; margin: 0 auto 24px; line-height: 1.65; }
+
+    /* ─── Company Banner ─── */
+    .co-banner { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,90,240,0.15)); border: 1px solid rgba(79,142,247,0.3); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px; }
+    .co-banner h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+    .co-banner p { color: var(--text-dim); font-size: 0.875rem; line-height: 1.6; margin: 0; }
+    .co-banner .tag { display: inline-block; background: var(--accent2); color: #fff; border-radius: 99px; padding: 2px 10px; font-size: 0.72rem; margin-right: 6px; margin-bottom: 6px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 20px 16px; }
+      .cgrid { grid-template-columns: 1fr; }
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🦄 Unicorn NZ · MS365 & HCI 速成</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span>总体进度</span><span id="pct">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="pfill" style="width:0%"></div></div>
+  </div>
+  <div class="header-right">
+    <span class="badge" id="mb">Day 1</span>
+    <span class="badge" id="sb">🔥 0/7 天</span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════
+// COURSE DATA — fully expanded
+// ═══════════════════════════════════════════════════
+
+const DATA = {
+
+// ───────────────────────────────────────────────
+// PRE-COURSE: Company Introduction
+// ───────────────────────────────────────────────
+pre: {
+  title: '课前 · Unicorn NZ 公司概览',
+  subtitle: '知己知彼，百战不殆',
+  steps: [
+    {
+      id: 'pre1', type: 'concept', title: 'Unicorn NZ 是做什么的？',
+      content: `
+<div class="co-banner">
+  <h2>🏢 Unicorn NZ · 新西兰本地 ICT 公司</h2>
+  <p>成立于 2011 年，NZ 各地 2000+ 企业客户。使命：让企业用上最先进的 ICT 技术，价格合理，服务贴心。</p>
+  <div>
+    <span class="tag">Cloud PBX</span>
+    <span class="tag">IT 托管</span>
+    <span class="tag">宽带/语音</span>
+    <span class="tag">NZ 各地</span>
+  </div>
+</div>
+
+<h2>核心业务：Cloud PBX（云电话系统）</h2>
+<p>把企业传统电话系统搬上云，员工无论在哪都能用内部分机打外线、开会、录音、通话记录管理。相当于"企业版钉钉/飞书电话+CRM集成"。</p>
+
+<h3>为什么 Unicorn 的面试会问 MS365/Teams？</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">Teams 是入口</div>
+    <div class="desc">微软 Teams 本身就是 UCaaS（统一通信即服务），跟 Unicorn 的 Cloud PBX 高度重叠。面试官会看你是否理解"云端企业通信"这件事。</div>
+  </div>
+  <div class="ci">
+    <div class="term">Azure AD 是身份中枢</div>
+    <div class="desc">企业通信的安全基石：谁可以打电话/发消息/访问录音记录，全靠身份管理。</div>
+  </div>
+  <div class="ci">
+    <div class="term">Intune 是设备管控</div>
+    <div class="desc">员工的手机/电脑能不能访问公司电话系统里的客户数据，这是实际运营问题。</div>
+  </div>
+  <div class="ci">
+    <div class="term">HCI 是底层架构</div>
+    <div class="desc">Unicorn 帮客户托管 IT，他们的服务器很可能就跑在 HCI 上（VMware vSphere/vSAN）。</div>
+  </div>
+</div>
+
+<div class="callout yellow">
+  <strong>面试前必须记住：</strong>Unicorn NZ = 新西兰本地 Cloud PBX + IT 托管服务商，核心能力是企业通信云化。MS365/Teams 知识和这个直接相关。
+</div>
+
+<h3>Unicorn 规模（官网数据）</h3>
+<ul>
+  <li><strong>5000+</strong> 宽带连接</li>
+  <li><strong>6000+</strong> 语音连接</li>
+  <li><strong>2000+</strong> 企业客户</li>
+  <li><strong>2011年</strong> 成立，14年历史</li>
+</ul>
+      `
+    },
+    {
+      id: 'pre2', type: 'quiz', title: '公司认知小测',
+      questions: [
+        {
+          q: 'Unicorn NZ 的核心产品/服务是什么？',
+          options: ['手机硬件销售', 'Cloud PBX（云电话系统）+ IT 托管服务', '网页设计', '电商平台'],
+          answer: 1,
+          explanation: 'Unicorn 核心是 Cloud PBX——帮企业把电话系统搬上云，配合 IT 托管服务。官网明确说"Cloud PBX + IT Care"是两大支柱。'
+        },
+        {
+          q: '为什么 Unicorn 的面试会考 Azure AD / Teams 相关知识？',
+          options: [
+            '因为面试官喜欢考微软认证内容',
+            '因为 Teams 本身是 UCaaS 产品，和 Unicorn 的 Cloud PBX 业务高度相关',
+            '因为新西兰政府要求所有公司用微软',
+            '因为 Azure AD 免费'
+          ],
+          answer: 1,
+          explanation: 'Teams 是微软的 UCaaS 平台，Unicorn 做 Cloud PBX 天然和它竞争/互补。理解 Teams 的架构和管理，是理解企业云通信的基础。'
+        },
+        {
+          q: 'Unicorn NZ 服务的客户主要在哪里？',
+          options: ['只在奥克兰', '只在北岛', '新西兰全国各地', '主要在澳大利亚'],
+          answer: 2,
+          explanation: '官网说"Customers are all over New Zealand, not just in Auckland"。NZ 全国各地都有业务。'
+        }
+      ]
+    },
+    {
+      id: 'pre3', type: 'complete', title: '公司概览完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">🦄</div>
+  <h2>Unicorn NZ 概览已解锁</h2>
+  <p>现在你知道了：这是一家做企业云通信+IT托管的NZ本地公司。面试时提到他们的 Cloud PBX 业务会加分。</p>
+  <button class="btn btn-primary" onclick="navigate('day1',0)">开始 Day 1 · Azure AD →</button>
+</div>
+      `
+    }
+  ]
+},
+
+// ───────────────────────────────────────────────
+// DAY 1: Azure AD
+// ───────────────────────────────────────────────
+day1: {
+  title: 'Day 1 · Azure AD 身份与访问管理',
+  subtitle: '企业身份管理 = 所有安全的根基',
+  steps: [
+    {
+      id: 'd1s1', type: 'concept', title: 'Azure AD 的本质',
+      content: `
+<h2>Azure AD = 微软的"中央空调"</h2>
+<p>Azure Active Directory（现称 <strong>Microsoft Entra ID</strong>）是云端身份服务。简单理解：</p>
+<div class="callout">
+  员工账号、权限、应用授权——全部在 Azure AD 里管。就像大楼的中央空调：所有房间（微软服务）都从同一个地方获取暖气（身份验证）。
+</div>
+
+<h3>核心能力</h3>
+<ul>
+  <li><strong>SSO（单点登录）</strong>：一次登录，访问所有已授权应用（Teams、Outlook、Azure、SharePoint...）</li>
+  <li><strong>MFA（多因素认证）</strong>：密码+手机验证码，双重保险</li>
+  <li><strong>Conditional Access（条件访问）</strong>：基于位置/设备/风险决定谁能登录</li>
+  <li><strong>应用单一登录</strong>：SAML / OIDC / OAuth 集成</li>
+</ul>
+
+<h3>Azure AD vs 传统 AD</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">传统 AD（本地）</div>
+    <div class="desc">跑在 Windows Server 上，只能在内网用，适合纯本地架构</div>
+  </div>
+  <div class="ci">
+    <div class="term">Azure AD（云）</div>
+    <div class="desc">托管在微软云，全球可访问，原生支持 SaaS 和混合云架构</div>
+  </div>
+</div>
+
+<h3>与 Unicorn 的关系</h3>
+<p>Unicorn 的 Cloud PBX 系统（如 Teams Direct Routing）依赖 Azure AD 做身份验证——谁可以用哪个分机、谁可以听录音、谁可以改配置，全在 Azure AD 里管。</p>
+      `
+    },
+    {
+      id: 'd1s2', type: 'quiz', title: 'Azure AD 基础概念',
+      questions: [
+        {
+          q: 'Azure AD 的 Conditional Access 主要解决什么问题？',
+          options: [
+            '让用户登录更快',
+            '基于位置/设备/风险信号，动态决定是否允许访问',
+            '降低 Azure 账单',
+            '自动创建用户账号'
+          ],
+          answer: 1,
+          explanation: 'Conditional Access 是"智能门卫"：IF（非常用位置）AND（个人设备）THEN（要求 MFA 或阻止）。这是零信任安全的核心组件。'
+        },
+        {
+          q: 'SSO 的核心价值是？',
+          options: [
+            '节省服务器资源',
+            '一次登录访问所有授权应用，减少密码疲劳，集中管控权限',
+            '让密码更复杂',
+            '加快网速'
+          ],
+          answer: 1,
+          explanation: 'SSO（Single Sign-On）让用户记一个密码，同时让 IT 可以集中管控——安全+体验双赢。'
+        },
+        {
+          q: '以下哪个是 MFA 的认证因素？',
+          options: [
+            '你家的地址',
+            '你拥有的东西（手机/令牌）',
+            '你汽车的型号',
+            '你常去的餐厅'
+          ],
+          answer: 1,
+          explanation: 'MFA 三要素：你知道的（密码）、你拥有的（手机/硬件令牌）、你本身的（指纹/面部）。位置不是 MFA 因素，是 Conditional Access 的判断条件。'
+        }
+      ]
+    },
+    {
+      id: 'd1s3', type: 'concept', title: 'Conditional Access 深度讲解',
+      content: `
+<h2>Conditional Access 实战场景</h2>
+<p>面试经常会问："Conditional Access 什么时候触发？"最好的回答是结合场景：</p>
+
+<div class="callout yellow">
+  <strong>回答模板：</strong>"当用户登录时，Azure AD 会评估多个信号——登录位置、设备状态、风险评分。如果用户从非常用城市登录且使用未注册设备，系统会要求额外验证（MFA）或直接阻止访问。"
+</div>
+
+<h3>三大判断条件</h3>
+<ul>
+  <li><strong>位置（Location）</strong>：信任的办公 IP vs 未知地区/ VPN 之外</li>
+  <li><strong>设备（Device）</strong>：是否 Intune 注册？是否满足合规策略？</li>
+  <li><strong>风险（Risk）</strong>：微软 Entra ID Protection 检测到的异常行为</li>
+</ul>
+
+<h3>典型配置示例</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">场景：在这里上班 🇳🇿</div>
+    <div class="desc">信任 IP 段 → 直接放行，不要求 MFA</div>
+  </div>
+  <div class="ci">
+    <div class="term">场景：出差到海外 🌏</div>
+    <div class="desc">非信任位置 → 要求手机 MFA 验证</div>
+  </div>
+  <div class="ci">
+    <div class="term">场景：个人手机尝试登录 📱</div>
+    <div class="desc">未注册 Intune → 阻止访问公司数据</div>
+  </div>
+  <div class="ci">
+    <div class="term">场景：检测到暴力破解 🚨</div>
+    <div class="desc">风险评分升高 → 强制 MFA 或阻止</div>
+  </div>
+</div>
+
+<h3>结合 Intune 的实际案例</h3>
+<p>Unicorn 的 IT 托管客户中，很多员工用个人手机访问 Teams/企业微信。如果这部手机没注册 Intune，Conditional Access 会直接阻止打开公司数据——这是 <strong>MDM + CA</strong> 联动保护企业数据的典型场景。</p>
+      `
+    },
+    {
+      id: 'd1s4', type: 'code', title: '动手实验：Azure AD 用户与组',
+      content: `
+<h2>场景：给新员工开通账号并分配到"实习生"组</h2>
+<p>实际操作在 Azure Portal 或 PowerShell。面试能用大白话描述流程即可。</p>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    <span class="terminal-title">Azure AD · PowerShell 模拟</span>
+  </div>
+  <div class="tt">
+<span class="tl cmd"># 步骤 1：创建用户</span>
+<span class="tl out">New-AzureADUser -DisplayName "张三" \</span>
+<span class="tl out">  -UserPrincipalName "zhangsan@unicornnz.onmicrosoft.com" \</span>
+<span class="tl out">  -MailNickName "zhangsan" -PasswordProfile $pw</span>
+<span class="tl ok">✅ 用户 zhangsan 已创建</span>
+
+<span class="tl cmd"># 步骤 2：创建"实习生"组</span>
+<span class="tl out">New-AzureADGroup -DisplayName "实习生" \</span>
+<span class="tl out">  -MailNickName "interns" -SecurityEnabled $true</span>
+<span class="tl ok">✅ 组 interns 已创建</span>
+
+<span class="tl cmd"># 步骤 3：把用户加入组（组分配权限，成员自动继承）</span>
+<span class="tl out">Add-AzureADGroupMember -ObjectId (Get-AzureADGroup -SearchString "实习生").ObjectId \</span>
+<span class="tl out">  -RefObjectId (Get-AzureADUser -SearchString "张三").ObjectId</span>
+<span class="tl ok">✅ 张三已加入"实习生"组</span>
+
+<span class="tl cmd"># 验证</span>
+<span class="tl out">Get-AzureADGroupMember -ObjectId (Get-AzureADGroup -SearchString "实习生").ObjectId</span>
+<span class="tl out">DisplayName     UserPrincipalName</span>
+<span class="tl out">-----------     -----------------</span>
+<span class="tl out">张三            zhangsan@unicornnz.onmicrosoft.com</span>
+  </div>
+</div>
+
+<div class="callout green">
+  <strong>面试核心回答：</strong>"Azure AD 里，我们用组（Group）管理权限。用户加进组，就自动获得该组的所有权限。这样只要改组的权限，所有成员自动生效，不用一个个配。"
+</div>
+      `
+    },
+    {
+      id: 'd1s5', type: 'quiz', title: 'Azure AD 综合小测',
+      questions: [
+        {
+          q: 'Azure AD 中，组（Group）和角色（Role）的核心区别是？',
+          options: [
+            '没有区别',
+            '组是用户的集合（谁），角色是权限的集合（能做什么）',
+            '角色是用户的集合，组是权限的集合',
+            '只有管理员才能被加进组'
+          ],
+          answer: 1,
+          explanation: '组 = 成员管理；角色 = 权限定义。两者配合："哪些人（组）"对"哪些资源"有"什么权限（角色）"。'
+        },
+        {
+          q: '如果 Unicorn 要给所有出差海外的员工强制 MFA，正确的实现方式是？',
+          options: [
+            '要求所有员工换密码',
+            '在公司网络中禁止所有访问',
+            '配置 Azure AD Conditional Access，条件=非信任位置，强制操作=要求 MFA',
+            '让员工每天签到'
+          ],
+          answer: 2,
+          explanation: 'Conditional Access 的标准用法：创建访问策略，条件（非信任位置）+ 强制操作（要求 MFA），所有匹配条件的登录自动触发。'
+        }
+      ]
+    },
+    {
+      id: 'd1s6', type: 'complete', title: 'Day 1 完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">✅</div>
+  <h2>Day 1 完成！Azure AD 已解锁</h2>
+  <p>身份管理是所有企业安全的根基。记住：组管理成员，角色管理权限，Conditional Access 是动态门卫。</p>
+  <button class="btn btn-primary" onclick="navigate('day2',0)">开始 Day 2 · Teams 管理 →</button>
+</div>
+      `
+    }
+  ]
+},
+
+// ───────────────────────────────────────────────
+// DAY 2: Teams Management
+// ───────────────────────────────────────────────
+day2: {
+  title: 'Day 2 · Microsoft Teams 管理',
+  subtitle: '企业统一通信（UCaaS）',
+  steps: [
+    {
+      id: 'd2s1', type: 'concept', title: 'Teams 不只是聊天工具',
+      content: `
+<h2>Teams 本质：统一通信平台（UCaaS）</h2>
+<p>很多人以为 Teams = "企业版微信"。其实它是：</p>
+<div class="callout">
+  Teams = <strong>聊天</strong> + <strong>会议</strong>（音频/视频/PSTN） + <strong>电话</strong>（Cloud PBX） + <strong>应用集成</strong>
+</div>
+
+<h3>为什么 Unicorn 看重 Teams？</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">🎯 竞争/互补关系</div>
+    <div class="desc">Unicorn 做 Cloud PBX，Teams 也是 UCaaS 平台。面试者理解 Teams 的架构和管理，说明理解"企业通信云化"这个大赛道。</div>
+  </div>
+  <div class="ci">
+    <div class="term">📞 音频会议（PSTN）</div>
+    <div class="desc">Teams 的音频会议让普通电话也能拨入会议——这和 Unicorn 的 Cloud PBX 接入号功能直接竞争/互补。</div>
+  </div>
+  <div class="ci">
+    <div class="term">🔐 配合 Azure AD</div>
+    <div class="desc">Teams 的身份、权限、审计全部基于 Azure AD。理解 Teams = 理解企业通信安全的全貌。</div>
+  </div>
+  <div class="ci">
+    <div class="term">☁️ Direct Routing</div>
+    <div class="desc">Teams Direct Routing 让企业用本地 SBC 连接 PSTN 电话网络——这是中大型企业用 Teams 替代传统 PBX 的关键技术。</div>
+  </div>
+</div>
+
+<h3>核心概念速查</h3>
+<ul>
+  <li><strong>许可证</strong>：Teams 基础免费；音频会议、语音通话需要额外许可证</li>
+  <li><strong>会议策略</strong>：管理员控制谁可以录音、共享屏幕、外部拨入</li>
+  <li><strong>Teams vs Office 365 Group</strong>：创建一个 Team 会自动创建对应的 Azure AD Group</li>
+  <li><strong>私人频道</strong>：需要特定权限才能创建/加入</li>
+</ul>
+      `
+    },
+    {
+      id: 'd2s2', type: 'quiz', title: 'Teams 概念小测',
+      questions: [
+        {
+          q: 'Teams 的"音频会议（Audio Conferencing）"主要解决什么问题？',
+          options: [
+            '让聊天消息发送更快',
+            '让普通电话也能拨打接入号加入在线会议',
+            '让用户可以改头像',
+            '让会议自动录制'
+          ],
+          answer: 1,
+          explanation: '音频会议让没有电脑/手机的人用普通电话拨入 Teams 会议，这是企业电话场景的标配功能，也是 PSTN 集成的核心。'
+        },
+        {
+          q: 'Teams 的会议策略（Meeting Policies）可以控制什么？',
+          options: [
+            '会议室的温度',
+            '谁可以录音、谁可以共享屏幕、谁可以邀请外部参与者',
+            '用户的消息发送频率',
+            '用户的网络带宽'
+          ],
+          answer: 1,
+          explanation: '会议策略是管理员控制会议行为的工具：录音、屏幕共享、外部参与、PSTN 接入等都可以精细控制。'
+        }
+      ]
+    },
+    {
+      id: 'd2s3', type: 'code', title: '动手实验：Teams 管理员场景',
+      content: `
+<h2>场景：作为 Unicorn IT 管理员，配置市场部 Teams 环境</h2>
+<p>要求：只有主管能创建私人频道，所有人能看到公开频道。</p>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    <span class="terminal-title">Teams Admin Center / PowerShell 模拟</span>
+  </div>
+  <div class="tt">
+<span class="tl cmd"># 步骤 1：创建市场部团队</span>
+<span class="tl out">New-Team -DisplayName "市场部" -MailNickName "marketing"</span>
+<span class="tl ok">✅ 团队创建成功</span>
+
+<span class="tl cmd"># 步骤 2：创建私人频道策略（限制普通成员创建权限）</span>
+<span class="tl out">Set-CsTeamsChannelsPolicy -Identity "MktPrivateChannelPolicy" \</span>
+<span class="tl out">  -AllowPrivateChannelCreation $false</span>
+<span class="tl ok">✅ 已限制：普通成员不可创建私人频道</span>
+
+<span class="tl cmd"># 步骤 3：将策略分配给市场部 Azure AD 组</span>
+<span class="tl out">Grant-CsTeamsChannelsPolicy -PolicyName "MktPrivateChannelPolicy" \</span>
+<span class="tl out">  -Group "az-ad-marketing-group-object-id"</span>
+<span class="tl ok">✅ 策略已分配，组内成员自动继承</span>
+
+<span class="tl cmd"># 步骤 4：配置音频会议（让外部电话能拨入）</span>
+<span class="tl out">Set-CsTeamsAudioConferencingPolicy -Identity "Marketing-Audio" \</span>
+<span class="tl out">  -AllowDialInUserToLeavePstnConferencing $true \</span>
+<span class="tl out">  -ConferenceMode "dual"</span>
+<span class="tl ok">✅ 音频会议已启用：PSTN 接入号码已配置</span>
+  </div>
+</div>
+
+<div class="callout green">
+  <strong>面试核心回答：</strong>"Teams 的策略通过 Azure AD 组分配，组内成员自动继承对应权限。这是大规模管理的高效方式——改策略，所有人即时生效。"
+</div>
+      `
+    },
+    {
+      id: 'd2s4', type: 'quiz', title: 'Teams + Azure AD 关系',
+      questions: [
+        {
+          q: 'Teams 和 Azure AD 的关系是？',
+          options: [
+            '完全独立',
+            'Teams 用户账号就是 Azure AD 账号，权限由 Azure AD 统一管理',
+            'Teams 有自己独立的用户数据库',
+            'Teams 管理员和 Azure AD 管理员是同一个人'
+          ],
+          answer: 1,
+          explanation: 'Teams 100% 基于 Azure AD——创建 Teams 用户 = 在 Azure AD 创建账号；设置 Teams 权限 = 在 Azure AD 配置组和角色。'
+        },
+        {
+          q: 'Unicorn NZ 做 Cloud PBX，面试问 Teams 音频会议是考什么？',
+          options: [
+            '考打字速度',
+            '考是否理解"云电话+会议融合"这个 UCaaS 核心概念',
+            '考是否背下了微软产品名',
+            '考新西兰地理'
+          ],
+          answer: 1,
+          explanation: 'Teams 音频会议是 PSTN 电话和在线会议的结合点——这正是 Unicorn 核心业务 Cloud PBX 的关键技术。理解这个说明你懂行业。'
+        }
+      ]
+    },
+    {
+      id: 'd2s5', type: 'complete', title: 'Day 2 完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">✅</div>
+  <h2>Day 2 完成！Teams 管理已解锁</h2>
+  <p>Teams = 统一通信平台，不是聊天工具。记住：Teams 基于 Azure AD，音频会议是 PSTN 和在线会议的融合点。</p>
+  <button class="btn btn-primary" onclick="navigate('day3',0)">开始 Day 3 · Intune 设备管理 →</button>
+</div>
+      `
+    }
+  ]
+},
+
+// ───────────────────────────────────────────────
+// DAY 3: Intune
+// ───────────────────────────────────────────────
+day3: {
+  title: 'Day 3 · Intune 设备管理',
+  subtitle: '企业移动性与数据安全',
+  steps: [
+    {
+      id: 'd3s1', type: 'concept', title: '企业为什么要管设备？',
+      content: `
+<h2>BYOD 时代的安全难题</h2>
+<p>员工用自己手机办公——公司怎么保证数据安全，又不侵犯隐私？</p>
+<div class="callout yellow">
+  平衡点：<strong>公司数据进得去，个人数据保得住</strong>
+</div>
+
+<h3>Unicorn 的实际场景</h3>
+<p>Unicorn 帮企业托管 IT 时，很多客户的员工用个人手机登录 Teams/企业微信访问公司数据。如果这部手机中了恶意软件，公司客户数据就暴露了。Intune 就是来解决这个问题的。</p>
+
+<h3>Intune 两大核心能力</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">MDM（设备管理）</div>
+    <div class="desc">公司完全管控设备：远程锁机、远程擦除、强制密码、加密存储。<br><strong>适合：</strong>公司发的设备（COPE）</div>
+  </div>
+  <div class="ci">
+    <div class="term">MAM（应用管理）</div>
+    <div class="desc">只管理公司应用和数据，不碰员工个人数据（照片、微信等）。<br><strong>适合：</strong>员工自带设备（BYOD）</div>
+  </div>
+</div>
+
+<h3>关键概念</h3>
+<ul>
+  <li><strong>设备注册</strong>：员工手机加入公司管理（COPE 强制注册，BYOD 自愿注册）</li>
+  <li><strong>合规策略</strong>：设备必须满足条件才能访问公司数据（密码强度、加密状态、是否越狱）</li>
+  <li><strong>条件访问</strong>：设备不合规 → Azure AD 阻止访问公司数据</li>
+  <li><strong>选择性擦除（Selective Wipe）</strong>：只删公司数据，保留个人数据——BYOD 必备</li>
+</ul>
+      `
+    },
+    {
+      id: 'd3s2', type: 'quiz', title: 'Intune 概念小测',
+      questions: [
+        {
+          q: 'MDM（设备管理）和 MAM（应用管理）的核心区别是？',
+          options: [
+            'MDM 管应用，MAM 管设备',
+            'MDM 管理整个设备，MAM 只管理公司应用和数据',
+            '两者完全一样',
+            'MAM 比 MDM 更贵'
+          ],
+          answer: 1,
+          explanation: 'MDM = 整台设备管（公司手机）；MAM = 只管公司应用和数据（员工自带手机）。这是 BYOD 场景的核心区别。'
+        },
+        {
+          q: '员工离职时，公司想删掉他手机上的公司邮件但保留个人照片，正确的操作是？',
+          options: [
+            '远程全量擦除（Full Wipe）',
+            '选择性擦除（Selective Wipe / MAM Wipe）',
+            '让员工自己删',
+            '把手机砸了'
+          ],
+          answer: 1,
+          explanation: 'Selective Wipe（也叫 MAM Wipe）只删除公司管理的企业应用和数据，保留手机上的个人内容。这是 BYOD 场景的法律要求（新西兰隐私法）。'
+        }
+      ]
+    },
+    {
+      id: 'd3s3', type: 'code', title: '动手实验：Intune 合规策略 + CA 联动',
+      content: `
+<h2>场景：配置合规策略——不合规设备禁止访问公司邮件</h2>
+<p>这是企业安全的标配组合：Intune 合规策略 + Azure AD 条件访问。</p>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    <span class="terminal-title">Microsoft Endpoint Manager / Intune 模拟</span>
+  </div>
+  <div class="tt">
+<span class="tl cmd"># 步骤 1：创建设备合规策略</span>
+<span class="tl out">New-DeviceCompliancePolicy -DisplayName "基础安全策略" \</span>
+<span class="tl out">  -Platform "iOS/Android" \</span>
+<span class="tl out">  -PasswordRequired $true \</span>
+<span class="tl out">  -PasswordMinLength 8 \</span>
+<span class="tl out">  -EncryptionRequired $true \</span>
+<span class="tl out">  -DeviceThreatProtectionEnabled $true</span>
+<span class="tl ok">✅ 合规策略创建成功</span>
+
+<span class="tl cmd"># 步骤 2：绑定 Azure AD 条件访问（不合规设备 → 阻止访问 Exchange）</span>
+<span class="tl out">New-ConditionalAccessPolicy -DisplayName "合规设备才可访问邮件" \</span>
+<span class="tl out">  -GrantControl "RequireCompliantDevice" \</span>
+<span class="tl out">  -IncludedWorkloads "ExchangeOnline" \</span>
+<span class="tl out">  -ExcludedGroups @("IT-Admins")</span>
+<span class="tl ok">✅ 条件访问策略已激活</span>
+
+<span class="tl cmd"># 步骤 3：模拟检查设备合规状态</span>
+<span class="tl out">Get-MgDevice -Filter "AccountEnabled eq true" |</span>
+<span class="tl out">  Select-Object DisplayName, ComplianceState, OperatingSystem</span>
+<span class="tl out">DisplayName      ComplianceState  OS</span>
+<span class="tl out">-----------      ---------------  --</span>
+<span class="tl out">张三的 iPhone    Compliant       iOS</span>
+<span class="tl out">李四的三星       NonCompliant    Android</span>
+<span class="tl err">⚠️ 李四的设备未加密，已被阻止访问公司邮件</span>
+  </div>
+</div>
+
+<div class="callout green">
+  <strong>面试核心回答：</strong>"Intune 合规策略配合 Azure AD 条件访问，形成闭环：设备不合规 → CA 阻止访问公司数据。这是零信任安全的基础组合拳。"
+</div>
+      `
+    },
+    {
+      id: 'd3s4', type: 'quiz', title: 'Intune 综合小测',
+      questions: [
+        {
+          q: 'Unicorn IT 托管客户里，员工用自己手机登录 Teams 处理客户电话记录，应该用 MDM 还是 MAM？',
+          options: [
+            'MDM，因为更安全',
+            'MAM，因为是员工自有设备，只管公司数据不碰个人数据',
+            '两个都不用',
+            'MDM 和 MAM 完全一样'
+          ],
+          answer: 1,
+          explanation: 'BYOD 场景（员工自带设备）必须用 MAM——公司只能管理公司应用和数据，不能碰员工的个人隐私。新西兰隐私法有明确要求。'
+        }
+      ]
+    },
+    {
+      id: 'd3s5', type: 'complete', title: 'Day 3 完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">✅</div>
+  <h2>Day 3 完成！Intune 已解锁</h2>
+  <p>MDM 管设备，MAM 管应用——BYOD 场景用 MAM，只删公司数据，不碰个人隐私。记住：Intune + Conditional Access = 零信任闭环。</p>
+  <button class="btn btn-primary" onclick="navigate('day4',0)">开始 Day 4 · Power Platform →</button>
+</div>
+      `
+    }
+  ]
+},
+
+// ───────────────────────────────────────────────
+// DAY 4: Power Platform + M365 Integration
+// ───────────────────────────────────────────────
+day4: {
+  title: 'Day 4 · Power Platform + M365 全家桶',
+  subtitle: '自动化与企业生态',
+  steps: [
+    {
+      id: 'd4s1', type: 'concept', title: 'M365 全家桶的正确理解',
+      content: `
+<h2>M365 不是工具集合，是生态系统</h2>
+<p>很多人以为 M365 = 几个独立的微软软件。其实它们全部互通：</p>
+<div class="callout">
+  Azure AD（身份）+ Teams（通信）+ Intune（设备）+ SharePoint（文件）+ Power Automate（自动化）= M365 全家桶
+</div>
+
+<h3>组件关系图（面试必背）</h3>
+<div class="cgrid">
+  <div class="ci"><div class="term">🔐 Azure AD</div><div class="desc">所有组件的身份基础——统一登录和权限</div></div>
+  <div class="ci"><div class="term">💬 Teams</div><div class="desc">统一通信入口——聊天、会议、语音</div></div>
+  <div class="ci"><div class="term">📱 Intune</div><div class="desc">设备安全——MDM/MAM + 合规策略</div></div>
+  <div class="ci"><div class="term">📁 SharePoint</div><div class="desc">内容管理——文件存储、权限、协作</div></div>
+  <div class="ci"><div class="term">⚡ Power Automate</div><div class="desc">工作流自动化——把重复的事交给程序</div></div>
+  <div class="ci"><div class="term">🎨 Power Apps</div><div class="desc">低代码画布应用——非技术人员也能搭</div></div>
+</div>
+
+<h3>Unicorn 的实际场景</h3>
+<p>Unicorn IT 托管客户经常需要：客户来电 → 自动创建工单 → 分配给技术员 → 完成后邮件通知客户。这在 M365 里用 Power Automate + SharePoint + Outlook 搭，不需要写代码。</p>
+      `
+    },
+    {
+      id: 'd4s2', type: 'concept', title: 'Power Automate 入门',
+      content: `
+<h2>Power Automate = 微软的 IFTTT</h2>
+<p>把重复性的审批、通知、数据处理自动化。你定义规则，程序跑。</p>
+
+<h3>三种触发方式</h3>
+<ul>
+  <li><strong>自动触发</strong>：事件发生时（收到邮件/新文件上传/SharePoint 条目创建）</li>
+  <li><strong>手动触发</strong>：点击按钮运行（如"一键提交周报"）</li>
+  <li><strong>计划触发</strong>：定时执行（如每天早上 9 点发日程汇总）</li>
+</ul>
+
+<h3>Unicorn IT 工单自动化场景</h3>
+<div class="callout green">
+  <strong>示例：</strong><br>
+  客户提交工单（SharePoint）→ 自动识别工单类型 → 分配给对应技术组 → Teams 通知 → 处理完成后邮件回复客户
+</div>
+<p>这在 Power Automate 里只需要拖拽配置，不需要写代码。</p>
+
+<h3>Power Apps 低代码</h3>
+<p>非 IT 人员也可以用 Power Apps 搭简单工具——比如工单查询、库存管理、客户信息录入。Unicorn 帮客户做 IT 托管时，这类自动化工具可以显著提升客户效率。</p>
+      `
+    },
+    {
+      id: 'd4s3', type: 'quiz', title: 'Power Platform 小测',
+      questions: [
+        {
+          q: 'SharePoint Online 和 OneDrive 的核心区别是？',
+          options: [
+            '没有区别',
+            'OneDrive 是个人网盘，SharePoint 是团队/企业文件库（多人在权限控制下协作）',
+            'SharePoint 比 OneDrive 贵',
+            'OneDrive 不能存文件'
+          ],
+          answer: 1,
+          explanation: 'OneDrive = 个人网盘（仅自己访问）；SharePoint = 团队文件库（多人协作+权限管理+版本控制+元数据）。'
+        },
+        {
+          q: 'Power Automate 的"计划触发（Scheduled trigger）"最适合什么场景？',
+          options: [
+            '用户点击按钮时',
+            '文件上传时',
+            '每天早上定时发送昨日工单汇总报表给主管',
+            '收到邮件时'
+          ],
+          answer: 2,
+          explanation: '计划触发适合周期性的后台任务：日报/周报、定时检查、定时提醒。收到邮件/文件上传是事件触发。'
+        }
+      ]
+    },
+    {
+      id: 'd4s4', type: 'code', title: '动手实验：IT 工单自动化工流',
+      content: `
+<h2>场景：Unicorn IT 部门的工单自动处理流</h2>
+<p>客户提交工单 → 自动识别类型 → 分配技术员 → Teams 通知 → 完成邮件回复</p>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    <span class="terminal-title">Power Automate · 设计器流程图（模拟）</span>
+  </div>
+  <div class="tt">
+<span class="tl cmd"># Power Automate 工单自动化流程</span>
+<span class="tl out">┌───────────────────────────────────────┐</span>
+<span class="tl out">│ 触发：SharePoint 列表有新工单条目     │</span>
+<span class="tl out">└───────────────────┬───────────────────┘</span>
+<span class="tl out">                    ↓</span>
+<span class="tl out">┌───────────────────────────────────────┐</span>
+<span class="tl out">│ 条件分支：                            │</span>
+<span class="tl out">│   工单类型 = "硬件" → 分配给硬件组    │</span>
+<span class="tl out">│   工单类型 = "软件" → 分配给软件组    │</span>
+<span class="tl out">│   工单类型 = "网络" → 分配给网络组    │</span>
+<span class="tl out">└───────────────────┬───────────────────┘</span>
+<span class="tl out">                    ↓</span>
+<span class="tl out">┌───────────────────────────────────────┐</span>
+<span class="tl out">│ Teams：向对应组发送消息通知           │</span>
+<span class="tl out">│ "新工单：张三的显示器不亮，优先级：高" │</span>
+<span class="tl out">└───────────────────┬───────────────────┘</span>
+<span class="tl out">                    ↓</span>
+<span class="tl out">┌───────────────────────────────────────┐</span>
+<span class="tl out">│ SharePoint：更新工单状态为"处理中"   │</span>
+<span class="tl out">└───────────────────┬───────────────────┘</span>
+<span class="tl out">                    ↓</span>
+<span class="tl out">┌───────────────────────────────────────┐</span>
+<span class="tl out">│ 条件：状态 = "已完成"                │</span>
+<span class="tl out">│   YES → 发送邮件回复客户              │</span>
+<span class="tl out">│   NO  → 等待（下次触发检查）         │</span>
+<span class="tl out">└───────────────────────────────────────┘</span>
+<span class="tl ok">✅ 流程已激活，每有新工单自动处理</span>
+  </div>
+</div>
+
+<div class="callout green">
+  <strong>面试核心回答：</strong>"Power Automate 把 Unicorn IT 托管的重复性工作自动化——工单分配、通知、报表——让技术员专注解决实际问题，而不是手动处理流程。"
+</div>
+      `
+    },
+    {
+      id: 'd4s5', type: 'complete', title: 'Day 4 完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">✅</div>
+  <h2>Day 4 完成！M365 全家桶已解锁</h2>
+  <p>M365 是生态系统，不是工具集合。记住：身份（Azure AD）→ 协作（Teams）→ 设备（Intune）→ 文件（SharePoint）→ 自动化（Power Automate）。</p>
+  <button class="btn btn-primary" onclick="navigate('day5',0)">开始 Day 5 · HCI 虚拟化 →</button>
+</div>
+      `
+    }
+  ]
+},
+
+// ───────────────────────────────────────────────
+// DAY 5: HCI
+// ───────────────────────────────────────────────
+day5: {
+  title: 'Day 5 · HCI 超融合架构',
+  subtitle: '虚拟化与底层基础设施',
+  steps: [
+    {
+      id: 'd5s1', type: 'concept', title: '从虚拟化到 HCI',
+      content: `
+<h2>为什么需要虚拟化？</h2>
+<p>传统做法：一台物理服务器跑一个应用 → 资源浪费 + 管理复杂。</p>
+<div class="callout">
+  虚拟化：在一台物理服务器上同时跑多个"假电脑"（虚拟机），就像公寓隔间——共享硬件，独立运行。
+</div>
+
+<h3>核心组件</h3>
+<ul>
+  <li><strong>ESXi / vSphere</strong>：安装在每台物理机上的虚拟化平台（"房东"）</li>
+  <li><strong>VM（虚拟机）</strong>：虚拟化出来的"假电脑"，每台跑一个操作系统</li>
+  <li><strong>vSAN</strong>：VMware 的软件定义存储，把本地磁盘变成共享存储池</li>
+  <li><strong>vCenter</strong>：管理多个 ESXi 主机的中央控制台（"物业管理系统"）</li>
+  <li><strong>vMotion</strong>：热迁移 VM 到另一台主机，业务不中断</li>
+</ul>
+
+<h3>Unicorn 的实际场景</h3>
+<p>Unicorn IT 托管客户里，很多中型企业把服务器从本地迁到 HCI 平台。HCI 让 Unicorn 可以用更少的人管理更多客户的服务器——这是 MSP（托管服务提供商）的核心竞争力。</p>
+
+<h3>传统三层 vs HCI</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">传统三层架构</div>
+    <div class="desc">计算服务器 + 存储网络（SAN）+ 网络交换机——分开买、分开管、分开扩展</div>
+  </div>
+  <div class="ci">
+    <div class="term">HCI 超融合</div>
+    <div class="desc">计算+存储+网络融合在一个节点，横向扩展（加节点=同时加计算+存储），NZ 中小企业 IT 首选</div>
+  </div>
+</div>
+      `
+    },
+    {
+      id: 'd5s2', type: 'concept', title: 'vSAN 详解（面试高频）',
+      content: `
+<h2>vSAN：HCI 的存储层</h2>
+<p>vSAN 把每个 ESXi 节点的本地磁盘聚合成分布式共享存储，替代传统 SAN。</p>
+
+<h3>vSAN 数据冗余机制</h3>
+<ul>
+  <li><strong>镜像模式（2副本）</strong>：每份数据存 2 份，放不同节点。N节点可用容量 ≈ N×磁盘/2</li>
+  <li><strong>纠删码（Erasure Coding）</strong>：更高空间效率但更低性能，适合存档数据</li>
+  <li><strong>故障域（Failure Domain）</strong>：指定哪些节点不能同时故障，避免单点</li>
+</ul>
+
+<div class="callout yellow">
+  <strong>面试计算题：</strong>3节点集群，每节点 500GB SSD，2副本模式。可用容量？<br>
+  答案：总容量 1500GB ÷ 2副本 ≈ <strong>500GB 可用</strong>（未计纠删码开销，实际更少）
+</div>
+
+<h3>vMotion：零停机迁移</h3>
+<p>vMotion 可以在不关机的情况下，把运行中的 VM 从一台 ESXi 主机迁移到另一台——用于硬件维护、负载均衡、故障恢复。业务完全不中断。</p>
+
+<h3>HA：故障自动恢复</h3>
+<p>High Availability（高可用）：节点故障时，VM 自动在其他节点重启，恢复时间通常 < 5 分钟。对 Unicorn 的托管客户来说，这意味着"服务器挂了，客户几乎无感知"。</p>
+      `
+    },
+    {
+      id: 'd5s3', type: 'quiz', title: 'HCI 概念小测',
+      questions: [
+        {
+          q: 'HCI（超融合基础架构）的"超"体现在哪里？',
+          options: [
+            '比传统架构更贵',
+            '计算、存储、网络融合在同一个节点里，横向扩展（加节点=同时加计算+存储）',
+            '只能跑微软的系统',
+            '必须用公有云'
+          ],
+          answer: 1,
+          explanation: '"超" = Converged（融合）：传统架构分开管计算/存储/网络，HCI 把它们"拧"在一起，扩展更简单，运维更轻松。'
+        },
+        {
+          q: 'vSAN 的 2副本模式下，3节点集群每节点 500GB，可用容量是多少？',
+          options: ['1500GB', '500GB', '333GB', '0GB'],
+          answer: 1,
+          explanation: '2副本 = 每份数据存2份。3节点×500GB=1500GB总容量，÷2 = 500GB可用（未考虑校验开销）。'
+        },
+        {
+          q: 'vMotion 的核心作用是？',
+          options: [
+            '加快虚拟机启动速度',
+            '在不关机的情况下把运行中的 VM 热迁移到另一台 ESXi 主机',
+            '备份虚拟机',
+            '增加磁盘空间'
+          ],
+          answer: 1,
+          explanation: 'vMotion 是 VMware 的热迁移技术——业务不中断的情况下迁移 VM，用于硬件维护和负载均衡。HA 才是故障自动恢复。'
+        }
+      ]
+    },
+    {
+      id: 'd5s4', type: 'code', title: '动手实验：vSphere 日常操作',
+      content: `
+<h2>场景：在 Unicorn 托管客户的 HCI 集群上创建 VM 并配置高可用</h2>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    <span class="terminal-title">vSphere Client / PowerCLI 模拟</span>
+  </div>
+  <div class="tt">
+<span class="tl cmd"># 连接 vCenter</span>
+<span class="tl out">Connect-VIServer -Server vcenter.unicorn托管客户.co.nz -User admin@vsphere.local</span>
+<span class="tl ok">✅ 已连接</span>
+
+<span class="tl cmd"># 创建 VM（Windows Server 2022，4核/16GB/100GB）</span>
+<span class="tl out">New-VM -Name "FileServer-01" \</span>
+<span class="tl out">  -ResourcePool "Production" \</span>
+<span class="tl out">  -NumCpu 4 -MemoryGB 16 \</span>
+<span class="tl out">  -DiskGB 100 -NetworkName "VM Network" \</span>
+<span class="tl out">  -Datastore "vsanDatastore"</span>
+<span class="tl ok">✅ VM FileServer-01 已创建</span>
+
+<span class="tl cmd"># 配置 HA（节点故障时 VM 自动重启）</span>
+<span class="tl out">Get-Cluster "Production-Cluster" |</span>
+<span class="tl out">  Set-HA -Enabled $true -RestartPriority "Medium"</span>
+<span class="tl ok">✅ HA 已启用</span>
+
+<span class="tl cmd"># 查看集群健康状态</span>
+<span class="tl out">Get-Cluster "Production-Cluster" | Get-VMHost | Select Name,MemoryUsageGB,CPUUsage</span>
+<span class="tl out">Name          MemoryUsageGB    CPUUsage</span>
+<span class="tl out">----          --------------    --------</span>
+<span class="tl out">esxi-01       256/512GB        45%</span>
+<span class="tl out">esxi-02       248/512GB        38%</span>
+<span class="tl out">esxi-03       261/512GB        52%</span>
+<span class="tl ok">✅ 集群健康：3节点，负载均衡良好</span>
+
+<span class="tl cmd"># 模拟：esxi-02 故障，VM 自动在其他节点重启</span>
+<span class="tl out">Get-VM "FileServer-01" | Move-VM -Destination (Get-VMHost esxi-01)</span>
+<span class="tl out">（esxi-02 故障，vSphere HA 触发，VM 已迁移至 esxi-01）</span>
+<span class="tl ok">✅ HA 恢复完成，业务不中断</span>
+  </div>
+</div>
+      `
+    },
+    {
+      id: 'd5s5', type: 'quiz', title: 'HCI 场景应用',
+      questions: [
+        {
+          q: 'Unicorn IT 托管客户想从传统三层架构迁移到 HCI，最大的动力是什么？',
+          options: [
+            'HCI 看起来更酷',
+            '降低硬件复杂度，简化运维，弹性扩展——尤其适合 IT 人员少的中小企业',
+            'HCI 更便宜',
+            '传统架构已经停产'
+          ],
+          answer: 1,
+          explanation: 'HCI 的核心价值是简化运维和弹性扩展。对 IT 人员有限的中小企业（Unicorn 的典型客户），HCI 大幅降低管理复杂度。'
+        }
+      ]
+    },
+    {
+      id: 'd5s6', type: 'complete', title: 'Day 5 完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">✅</div>
+  <h2>Day 5 完成！HCI 虚拟化已解锁</h2>
+  <p>记住：HCI = 计算+存储+网络融合，vSAN = 分布式存储，vMotion = 热迁移，HA = 故障自动恢复。Unicorn 的 MSP 业务离不开这些。</p>
+  <button class="btn btn-primary" onclick="navigate('day6',0)">开始 Day 6 · 面试核心题 →</button>
+</div>
+      `
+    }
+  ]
+},
+
+// ───────────────────────────────────────────────
+// DAY 6: Interview Scenarios & Cheat Sheet
+// ───────────────────────────────────────────────
+day6: {
+  title: 'Day 6 · 面试核心题 & 应答策略',
+  subtitle: '知其然，更知所以然',
+  steps: [
+    {
+      id: 'd6s1', type: 'concept', title: 'M365 + HCI 架构全图',
+      content: `
+<h2>串联六天知识——面试架构题回答模板</h2>
+<p>面试官经常问："描述一下 M365 的架构"或者"你怎么理解企业云通信？"下面是最佳回答框架：</p>
+
+<div class="callout">
+  <strong>架构层级（从上到下）</strong><br>
+  身份层 → Azure AD（统一身份、SSO、MFA、Conditional Access）<br>
+  应用层 → Teams（通信）+ Intune（设备）+ Power Platform（自动化）+ SharePoint（文件）<br>
+  底层 → HCI 虚拟化（vSphere/vSAN/VM HA，支撑所有上层服务）
+</div>
+
+<h3>面试回答示例："Azure AD 的 Conditional Access 是怎么工作的？"</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">第一步：一句话定义</div>
+    <div class="desc">"Conditional Access 是 Azure AD 的实时访问控制——每次用户登录时评估信号，决定是否允许访问。"</div>
+  </div>
+  <div class="ci">
+    <div class="term">第二步：核心信号</div>
+    <div class="desc">"评估三个信号：用户身份（是否可信账号）、设备状态（是否 Intune 注册/合规）、位置（是否信任网络）。"</div>
+  </div>
+  <div class="ci">
+    <div class="term">第三步：执行动作</div>
+    <div class="desc">"根据评估结果执行：允许访问、要求 MFA、阻止访问、或只允许访问特定应用。"</div>
+  </div>
+  <div class="ci">
+    <div class="term">第四步：实际场景</div>
+    <div class="desc">"比如员工用未注册个人手机从海外登录，Intune 检测不合规，CA 会阻止访问公司数据——这是零信任的基本逻辑。"</div>
+  </div>
+</div>
+      `
+    },
+    {
+      id: 'd6s2', type: 'concept', title: 'Unicorn 定制面试场景',
+      content: `
+<h2>Unicorn NZ 面试可能问的专项问题</h2>
+
+<div class="callout unicorn">
+  <strong>🦄 Unicorn 核心业务：Cloud PBX + IT 托管。</strong><br>
+  所有回答尽量往"企业通信/云电话/托管服务"上靠，展示你理解他们的业务。
+</div>
+
+<h3>Q1："你对这个职位的理解是什么？"</h3>
+<p>❌ 错误回答："MS365 管理员，负责管理 Teams 和 Azure AD。"</p>
+<p>✅ 正确回答："Unicorn NZ 是做 Cloud PBX 和 IT 托管的——我理解这个岗位需要帮助客户管好企业通信平台（Teams/Intune/云电话）和底层基础设施（HCI）。我学过 Azure AD、Teams 管理、Intune 设备管控，也理解 MSP 托管业务的逻辑。"</p>
+
+<h3>Q2："如果客户的员工用个人手机访问 Teams，你怎么保证数据安全？"</h3>
+<p>✅ 正确回答分三步：</p>
+<ul>
+  <li>第一步：用 Intune MAM 注册设备——只管公司应用，不碰个人数据（合规+隐私）</li>
+  <li>第二步：配置合规策略——要求密码强度、加密、设备不能越狱</li>
+  <li>第三步：Azure AD Conditional Access——不合规设备禁止访问公司数据</li>
+</ul>
+
+<h3>Q3："HCI 和传统架构的区别？什么时候选 HCI？"（Unicorn 托管客户用）</h3>
+<p>✅ 正确回答：HCI 把计算+存储+网络融合在一个节点，扩展是横向的（加节点=同时加计算+存储）。适合 IT 人员少、需要快速部署、预算合理的中小企业。Unicorn 帮客户托管 IT，用 HCI 可以大幅减少管理复杂度。</p>
+      `
+    },
+    {
+      id: 'd6s3', type: 'quiz', title: 'Unicorn 定制场景题',
+      questions: [
+        {
+          q: 'Unicorn NZ 的核心业务是？',
+          options: ['卖电脑', 'Cloud PBX（云电话）+ IT 托管', '做网站', '手机游戏'],
+          answer: 1,
+          explanation: '官网明确说 Cloud PBX + IT Care 是两大支柱。面试提到 Cloud PBX 说明你做了功课。'
+        },
+        {
+          q: 'Unicorn IT 托管客户想让员工用个人手机处理工作邮件，但担心数据安全，正确的方案是？',
+          options: [
+            '禁止使用手机',
+            '用 Intune MAM + Azure AD Conditional Access（不合规设备禁止访问）',
+            '把所有手机换成公司手机',
+            '不处理了'
+          ],
+          answer: 1,
+          explanation: 'BYOD 场景的标准方案：Intune MAM 管理公司应用，Conditional Access 检查设备合规性，不合规就阻止——安全+不侵犯隐私。'
+        },
+        {
+          q: '面试官问"你为什么想加入 Unicorn NZ"，最好的回答角度是？',
+          options: [
+            '工资高',
+            '离家近',
+            "理解他们的 Cloud PBX + IT 托管业务，对企业通信云化这个方向感兴趣",
+            '随便投的'
+          ],
+          answer: 2,
+          explanation: '展示你研究过公司、理解业务、有明确兴趣——这才是面试想听到的。'
+        }
+      ]
+    },
+    {
+      id: 'd6s4', type: 'concept', title: '"你有什么问题要问我们？"最佳回答',
+      content: `
+<h2>面试结尾题：必问的"你有什么问题？"</h2>
+<p>这个问题其实在考你：1）你是不是真的对这家公司感兴趣，2）你想不想在这里成长。</p>
+
+<h3>✅ 问面试官的优质问题（选 2-3 个）</h3>
+<div class="cgrid">
+  <div class="ci">
+    <div class="term">🌱 成长相关</div>
+    <div class="desc">"团队会支持我考微软认证（如 MS-102、AZ-104）吗？"</div>
+  </div>
+  <div class="ci">
+    <div class="term">🔧 工作内容</div>
+    <div class="desc">"日常主要用什么技术栈？主要是管 Teams/Intune 还是也涉及 HCI/VMware？"</div>
+  </div>
+  <div class="ci">
+    <div class="term">🚀 业务了解</div>
+    <div class="desc">"Cloud PBX 这块，Unicorn 主要是做 Teams Direct Routing 还是自研平台？"</div>
+  </div>
+  <div class="ci">
+    <div class="term">👥 团队文化</div>
+    <div class="desc">"团队平时的技术交流是怎么做的？有内部技术分享吗？"</div>
+  </div>
+</div>
+
+<div class="callout red">
+  <strong>❌ 不要问：</strong>"工资多少？"（让 HR 主动说）/"有没有加班？"（让面试官觉得你不想付出）/"这个岗位做什么？"（你前面应该已经了解了）
+</div>
+      `
+    },
+    {
+      id: 'd6s5', type: 'concept', title: '面试综合框架（完整版）',
+      content: `
+<h2>完整面试应答结构（适合所有技术问题）</h2>
+
+<div class="callout">
+  <strong>黄金公式：</strong>定义 → 原理 → 场景 → 串联
+</div>
+
+<h3>示例：介绍 Conditional Access</h3>
+<ul>
+  <li><strong>定义（一句话）：</strong>"Conditional Access 是 Azure AD 的实时访问控制，每次登录时评估信号决定是否放行。"</li>
+  <li><strong>原理（怎么工作）：</strong>"评估三个信号：身份、设备状态、位置。根据信号匹配策略，执行允许/MFA/阻止。"</li>
+  <li><strong>场景（实际例子）：</strong>"比如客户员工用未注册手机从海外登录，Intune 检测不合规，CA 直接阻止访问公司数据。"</li>
+  <li><strong>串联（全局观）：</strong>"这和 Intune 配合形成闭环，是零信任安全的基础——永远不信任，总是验证。"</li>
+</ul>
+
+<h3>面试4大禁忌</h3>
+<div class="cgrid">
+  <div class="ci"><div class="term">1. 背书式回答</div><div class="desc">不要背诵微软文档原话，用自己的话解释</div></div>
+  <div class="ci"><div class="term">2. 只讲技术不顾场景</div><div class="desc">每个技术点都要说"在某某场景下有什么用"</div></div>
+  <div class="ci"><div class="term">3. 假装全懂</div><div class="desc">不懂就说"这个我没深入了解，但如果有需要我可以快速学"——诚实比装懂更安全</div></div>
+  <div class="ci"><div class="term">4. 完全不提公司</div><div class="desc">每个回答尽量带一句和 Unicorn 业务的关联</div></div>
+</div>
+      `
+    },
+    {
+      id: 'd6s6', type: 'complete', title: '🎉 全部完成！',
+      content: `
+<div class="done-screen">
+  <div class="done-icon">🏆</div>
+  <h2>六天速成完成！</h2>
+  <p>你已经解锁了 Unicorn NZ 面试所需的全部知识。去展示你的全局架构思维吧！</p>
+  <div style="margin:20px 0">
+    <div style="font-size:2.2rem;margin-bottom:8px">🦄</div>
+    <div style="color:var(--text-dim)">总体进度</div>
+    <div style="font-size:1.4rem;font-weight:700;color:var(--green)" id="final-score">100%</div>
+  </div>
+  <p style="color:var(--text-dim);font-size:0.85rem;line-height:1.7">
+    核心记忆：Azure AD（身份中枢）→ Teams/Intune（应用+设备）→ Power Platform（自动化）→ HCI（底层）<br>
+    面试必杀技：每题都讲"场景"，每个回答都关联 Unicorn 的 Cloud PBX / IT 托管业务
+  </p>
+</div>
+      `
+    }
+  ]
+}
+
+}; // end DATA
+
+// ═══════════════════════════════════════════════════
+// STATE MANAGEMENT
+// ═══════════════════════════════════════════════════
+
+const KEYS = ['pre','day1','day2','day3','day4','day5','day6'];
+const SKEY = 'unicorn-ms365-v2';
+
+function load() { try { return JSON.parse(localStorage.getItem(SKEY)||'{}'); } catch { return {}; } }
+function save(s) { localStorage.setItem(SKEY, JSON.stringify(s)); }
+
+function done(day, id) {
+  const st = load();
+  if (!st[day]) st[day] = [];
+  if (!st[day].includes(id)) st[day].push(id);
+  save(st);
+}
+
+function isDone(day, id) {
+  return (load()[day]||[]).includes(id);
+}
+
+function dayDone(day) {
+  const dd = DATA[day];
+  if (!dd) return false;
+  return (load()[day]||[]).length >= dd.steps.filter(s=>s.type!=='complete').length;
+}
+
+function doneDays() { return KEYS.filter(d=>dayDone(d)).length; }
+
+function totalProgress() {
+  let total=0,done=0;
+  KEYS.forEach(day => {
+    const steps = DATA[day].steps.filter(s=>s.type!=='complete');
+    total += steps.length;
+    done += (load()[day]||[]).filter(id=>steps.some(s=>s.id===id)).length;
+  });
+  return total>0 ? Math.round(done/total*100) : 0;
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+
+let curDay='pre', curIdx=0;
+
+function navigate(day, idx) {
+  curDay=day; curIdx=idx;
+  const s=load(); s._d=day; s._i=idx; save(s);
+  renderAll();
+  window.scrollTo(0,0);
+}
+
+function fwd() {
+  const dayData = DATA[curDay];
+  const step = dayData.steps[curIdx];
+  if (step.type !== 'complete') done(curDay, step.id);
+
+  if (curIdx < dayData.steps.length-1) {
+    navigate(curDay, curIdx+1);
+  } else {
+    const di = KEYS.indexOf(curDay);
+    if (di < KEYS.length-1) navigate(KEYS[di+1], 0);
+  }
+}
+
+function back() {
+  if (curIdx > 0) { navigate(curDay, curIdx-1); return; }
+  const di = KEYS.indexOf(curDay);
+  if (di > 0) {
+    const prev = KEYS[di-1];
+    navigate(prev, DATA[prev].steps.length-1);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════
+
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  let h = '<div class="sidebar-section"><div class="sidebar-section-label">🦄 Unicorn NZ 面试速成</div>';
+  KEYS.forEach(k => {
+    const d = DATA[k];
+    const dn = dayDone(k);
+    const act = curDay===k;
+    const icon = dn?'✅':act?'▶️':'⬜';
+    h += `<button class="module-btn${act?' active':''}${dn?' done':''}" onclick="navigate('${k}',0)">
+      <span class="si">${icon}</span>
+      <span class="ml"><span class="mn">${d.title.split('·')[0].trim()}</span><span class="ms">${d.subtitle}</span></span>
+    </button>`;
+  });
+  h += '</div>';
+  sb.innerHTML = h;
+  document.getElementById('mb').textContent = DATA[curDay].title.split('·')[0].trim();
+  document.getElementById('sb').textContent = `🔥 ${doneDays()}/${KEYS.length} 天`;
+}
+
+function updateProgress() {
+  document.getElementById('pct').textContent = totalProgress()+'%';
+  document.getElementById('pfill').style.width = totalProgress()+'%';
+}
+
+function renderStep() {
+  const main = document.getElementById('main');
+  const dayData = DATA[curDay];
+  const step = dayData.steps[curIdx];
+  const isComplete = step.type === 'complete' || isDone(curDay, step.id);
+
+  // pips
+  let pips = '';
+  const steps = dayData.steps;
+  steps.forEach((s,i) => {
+    const cls = i<curIdx?'done':i===curIdx?'active':'';
+    pips += `<div class="pip ${cls}"></div>`;
+  });
+
+  let content = '';
+  if (step.type === 'concept' || step.type === 'code') {
+    content = step.content;
+  } else if (step.type === 'quiz') {
+    content = renderQuiz(step);
+  } else if (step.type === 'complete') {
+    main.innerHTML = `<div class="step-ind">${pips}<span class="smet">${step.title} · ${curIdx+1}/${steps.length}</span></div>${step.content}`;
+    return;
+  }
+
+  const isFirst = curIdx===0 && KEYS.indexOf(curDay)===0;
+  main.innerHTML = `
+    <div class="step-ind">${pips}<span class="smet">${step.title} · ${curIdx+1}/${steps.length}</span></div>
+    <div class="card">${content}</div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back()" ${isFirst?'disabled':''}>← 上一步</button>
+      <button class="btn btn-primary" onclick="fwd()">${step.type==='quiz'?'确认答案 →':'完成并继续 →'}</button>
+    </div>`;
+
+  if (step.type === 'quiz') wireQuiz(step);
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-block').querySelector('code')?.innerText || '';
+      if (code) { navigator.clipboard.writeText(code); btn.textContent='已复制!'; setTimeout(()=>btn.textContent='复制',1500); }
+    });
+  });
+}
+
+function renderQuiz(step) {
+  let h='';
+  step.questions.forEach((q,qi) => {
+    const opts = q.options.map((o,oi)=>`
+      <div class="quiz-opt" data-qi="${qi}" data-oi="${oi}" onclick="selOpt(this,${qi},${oi},${q.answer})">
+        <span class="ol">${String.fromCharCode(65+oi)}</span><span>${o}</span>
+      </div>`).join('');
+    h += `<div class="quiz-card" id="qc${qi}">
+      <div class="quiz-q">${qi+1}. ${q.q}</div>
+      <div class="quiz-opts">${opts}</div>
+      <div class="qfb" id="fb${qi}"></div>
+    </div>`;
+  });
+  return h;
+}
+
+function wireQuiz(step) {
+  const st=load();
+  const qk=`q-${curDay}-${curIdx}`;
+  const saved=st[qk]||{};
+  Object.entries(saved).forEach(([qi,sOi])=>{
+    const q=step.questions[parseInt(qi)];
+    const card=document.getElementById('qc'+qi);
+    if(!card) return;
+    const oi=parseInt(sOi);
+    card.querySelectorAll('.quiz-opt').forEach(o=>o.classList.add('disabled'));
+    const sel=card.querySelector(`[data-oi="${oi}"]`);
+    const cor=card.querySelector(`[data-oi="${q.answer}"]`);
+    sel.classList.add(oi===q.answer?'correct':'wrong');
+    if(oi!==q.answer) cor.classList.add('correct');
+    const fb=document.getElementById('fb'+qi);
+    fb.className=`qfb show ${oi===q.answer?'correct':'wrong'}`;
+    fb.innerHTML=oi===q.answer?`✅ 正确！${q.explanation}`:`❌ 不对。${q.explanation}`;
+  });
+}
+
+function selOpt(el, qi, oi, answer) {
+  if(el.classList.contains('disabled')) return;
+  const st=load();
+  const qk=`q-${curDay}-${curIdx}`;
+  if(!st[qk]) st[qk]={};
+  st[qk][qi]=oi;
+  save(st);
+
+  const card=el.closest('.quiz-card');
+  const q=DATA[curDay].steps[curIdx].questions[qi];
+  card.querySelectorAll('.quiz-opt').forEach(o=>o.classList.add('disabled'));
+  const cor=card.querySelector(`[data-oi="${q.answer}"]`);
+  el.classList.add(oi===q.answer?'correct':'wrong');
+  if(oi!==q.answer) cor.classList.add('correct');
+  const fb=document.getElementById('fb'+qi);
+  fb.className=`qfb show ${oi===q.answer?'correct':'wrong'}`;
+  fb.innerHTML=oi===q.answer?`✅ 正确！${q.explanation}`:`❌ 不对。${q.explanation}`;
+}
+
+function renderAll() { renderSidebar(); updateProgress(); renderStep(); }
+
+// Restore
+const init=load();
+if(init._d && DATA[init._d]) navigate(init._d, init._i||0);
+else navigate('pre',0);
+</script>
+</body>
+</html>
