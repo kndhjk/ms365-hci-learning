@@ -24,9 +24,9 @@ createApp({
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ language: language.value, currentModule: currentModule.value, currentStep: currentStep.value, notes: notes.value, answers: answers.value }));
     }
     function toggleLanguage() { language.value = language.value === 'en' ? 'zh' : 'en'; persist(); }
-    function switchModule(key) { currentModule.value = key; currentStep.value = 0; persist(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    function nextStep() { if (currentStep.value < steps.value.length - 1) currentStep.value += 1; else if (moduleIndex.value < data.value.modules.length - 1) { currentModule.value = data.value.modules[moduleIndex.value + 1].key; currentStep.value = 0; } persist(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    function prevStep() { if (currentStep.value > 0) currentStep.value -= 1; else if (moduleIndex.value > 0) { const prevModule = data.value.modules[moduleIndex.value - 1]; currentModule.value = prevModule.key; currentStep.value = prevModule.steps.length - 1; } persist(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function switchModule(key) { currentModule.value = key; currentStep.value = 0; persist(); }
+    function nextStep() { if (currentStep.value < steps.value.length - 1) currentStep.value += 1; else if (moduleIndex.value < data.value.modules.length - 1) { currentModule.value = data.value.modules[moduleIndex.value + 1].key; currentStep.value = 0; } persist(); }
+    function prevStep() { if (currentStep.value > 0) currentStep.value -= 1; else if (moduleIndex.value > 0) { const prevModule = data.value.modules[moduleIndex.value - 1]; currentModule.value = prevModule.key; currentStep.value = prevModule.steps.length - 1; } persist(); }
     function setNote(key, value) { notes.value[key] = value; persist(); }
     function answerKey(qi) { return `${language.value}_${currentModule.value}_${currentStep.value}_${qi}`; }
     function choose(qi, picked) { answers.value[answerKey(qi)] = picked; persist(); }
