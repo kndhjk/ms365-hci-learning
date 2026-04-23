@@ -17,6 +17,21 @@ window.CAMPUS_LOOP_DATA = {
     ]
   },
   categories: ['All', 'Textbooks', 'Electronics', 'Furniture', 'Kitchen', 'Fashion', 'Transport', 'Dorm'],
+  quickLinks: [
+    { title: 'New this week', text: 'Fresh move-in and move-out listings updated daily.' },
+    { title: 'Student-verified feel', text: 'Built around campus pickup zones and student trust cues.' },
+    { title: 'Lower waste', text: 'Keep useful items in circulation instead of rebuying every semester.' }
+  ],
+  savedPanel: {
+    title: 'Saved items',
+    empty: 'No saved items yet. Save a listing to make the product feel personal and sticky.',
+    note: 'This static prototype uses localStorage to simulate personalised product behaviour.'
+  },
+  sellerMoments: [
+    'Post in under 60 seconds',
+    'Meet on campus, not random suburbs',
+    'List once, reach the next student fast'
+  ],
   listings: [
     { id: 1, emoji: '📚', title: 'Marketing Textbook Bundle', price: 38, category: 'Textbooks', seller: 'Amy, Year 2', campus: 'City Campus', condition: 'Used - very good', pickup: 'Student Hub', posted: '2 hours ago', desc: 'Three core business papers in one bundle, lightly highlighted, perfect for first-year students trying to cut costs.' },
     { id: 2, emoji: '🪑', title: 'Compact Study Chair', price: 22, category: 'Furniture', seller: 'Leo, Postgrad', campus: 'Grafton', condition: 'Used - good', pickup: 'Library side gate', posted: '1 day ago', desc: 'Lightweight desk chair, easy to move into flats or halls, still sturdy and clean.' },
@@ -45,5 +60,10 @@ window.CAMPUS_LOOP_DATA = {
       title: 'Sustainability fit',
       text: 'A campus-specific resale platform supports reuse, reduces waste, and lowers the barrier to student living.'
     }
+  ],
+  fakeInbox: [
+    { name: 'Amy', item: 'Marketing Textbook Bundle', msg: 'Hi! Still available. I can meet near the Business School at 2pm tomorrow.' },
+    { name: 'Jason', item: 'Second Monitor 24-inch', msg: 'Yes, HDMI cable is included. Pick-up works after 4pm.' },
+    { name: 'Mia', item: 'Starter Kitchen Set', msg: 'If you can collect this evening, I can hold it for you.' }
   ]
 };

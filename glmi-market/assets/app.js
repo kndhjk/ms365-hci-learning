@@ -100,6 +100,22 @@ createApp({
         </div>
       </section>
 
+      <section class="section two-col">
+        <div class="panel">
+          <h3>Why students would actually use this</h3>
+          <div v-for="item in market.quickLinks" :key="item.title" style="margin-bottom:14px">
+            <strong style="display:block;margin-bottom:4px">{{ item.title }}</strong>
+            <p style="margin:0">{{ item.text }}</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Seller-side value</h3>
+          <ul>
+            <li v-for="line in market.sellerMoments" :key="line">{{ line }}</li>
+          </ul>
+        </div>
+      </section>
+
       <section class="section">
         <div class="section-title">
           <div>
@@ -144,6 +160,28 @@ createApp({
           <div v-for="item in market.glmiAngles" :key="item.title" style="margin-bottom:14px">
             <strong style="display:block;margin-bottom:4px">{{ item.title }}</strong>
             <p style="margin:0">{{ item.text }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section two-col">
+        <div class="panel">
+          <h3>{{ market.savedPanel.title }}</h3>
+          <p v-if="!liked.length">{{ market.savedPanel.empty }}</p>
+          <div v-else>
+            <div v-for="item in market.listings.filter(x => liked.includes(x.id))" :key="item.id" style="padding:12px 0;border-bottom:1px solid var(--line)">
+              <strong>{{ item.title }}</strong>
+              <p style="margin:6px 0 0">NZ$ {{ item.price }} · {{ item.campus }} · {{ item.condition }}</p>
+            </div>
+          </div>
+          <p style="margin-top:14px">{{ market.savedPanel.note }}</p>
+        </div>
+        <div class="panel">
+          <h3>Inbox preview</h3>
+          <div v-for="row in market.fakeInbox" :key="row.name + row.item" style="padding:12px 0;border-bottom:1px solid var(--line)">
+            <strong>{{ row.name }}</strong>
+            <p style="margin:4px 0 6px;color:var(--text)">{{ row.item }}</p>
+            <p style="margin:0">{{ row.msg }}</p>
           </div>
         </div>
       </section>
