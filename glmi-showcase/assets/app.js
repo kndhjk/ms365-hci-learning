@@ -1,6 +1,44 @@
 const { createApp, computed, ref } = Vue;
 const data = window.GLMI_SITE_DATA;
-const STORAGE_KEY = 'glmi-showcase-state-v1';
+const STORAGE_KEY = 'glmi-showcase-state-v2';
+
+const zh = {
+  nav: ['项目逻辑', '研究证据', '表达方式'],
+  start: '开始看结构',
+  insight: '先看 insight',
+  market: '打开交易网站 ↗',
+  glmiCardTitle: '🎓 给 GLMI 用的讲解入口',
+  glmiCardText: '这是我们给朋友、队友和老师快速看懂项目逻辑用的页面。',
+  whyTitle: '为什么这页存在',
+  whyDesc: '不是堆字，而是把我们的项目逻辑整理成更容易讲解的结构。',
+  deckTitle: '交互式 GLMI 讲解页',
+  deckDesc: '左边切模块，右边按步骤展开。',
+  overall: '整体浏览进度',
+  module: '模块',
+  prev: '← 上一步',
+  next: '下一步 →',
+  footer: '为 GLMI 准备的静态 Vue 讲解页 · 支持 GitHub Pages',
+  lang: '中文'
+};
+
+const en = {
+  nav: ['Project logic', 'Research insight', 'Delivery'],
+  start: 'Start with the structure',
+  insight: 'Jump to insight',
+  market: 'Open resale prototype ↗',
+  glmiCardTitle: '🎓 Team-facing GLMI intro page',
+  glmiCardText: 'This page helps friends, teammates, and teachers understand our project logic quickly.',
+  whyTitle: 'Why this page exists',
+  whyDesc: 'Instead of dumping notes, we turned our thinking into a cleaner walkthrough.',
+  deckTitle: 'Interactive GLMI walkthrough',
+  deckDesc: 'Use the left side to switch modules and the right side to move step by step.',
+  overall: 'Overall progress',
+  module: 'Module',
+  prev: '← Previous',
+  next: 'Next →',
+  footer: 'Built for GLMI · static Vue walkthrough · GitHub Pages ready',
+  lang: 'English'
+};
 
 createApp({
   setup() {
@@ -9,7 +47,9 @@ createApp({
     const currentStep = ref(saved.currentStep || 0);
     const notes = ref(saved.notes || {});
     const answers = ref(saved.answers || {});
+    const language = ref(saved.language || 'en');
 
+    const copy = computed(() => language.value === 'zh' ? zh : en);
     const moduleIndex = computed(() => data.modules.findIndex(m => m.key === currentModule.value));
     const moduleData = computed(() => data.modules[moduleIndex.value]);
     const steps = computed(() => moduleData.value.steps);
@@ -21,8 +61,14 @@ createApp({
         currentModule: currentModule.value,
         currentStep: currentStep.value,
         notes: notes.value,
-        answers: answers.value
+        answers: answers.value,
+        language: language.value
       }));
+    }
+
+    function toggleLanguage() {
+      language.value = language.value === 'en' ? 'zh' : 'en';
+      persist();
     }
 
     function switchModule(key) {
@@ -82,7 +128,10 @@ createApp({
       setNote,
       notes,
       answers,
-      answerKey
+      answerKey,
+      language,
+      copy,
+      toggleLanguage
     };
   },
   template: `
@@ -94,9 +143,10 @@ createApp({
             <div>{{ data.brand }}</div>
           </div>
           <div class="nav-links">
-            <button class="active">Pitch</button>
-            <button>Insight</button>
-            <button>Framework</button>
+            <button class="active">{{ copy.nav[0] }}</button>
+            <button>{{ copy.nav[1] }}</button>
+            <button>{{ copy.nav[2] }}</button>
+            <button @click="toggleLanguage()">{{ copy.lang }}</button>
           </div>
         </div>
 
@@ -108,9 +158,9 @@ createApp({
             <h1>{{ data.hero.titleA }} <span class="gradient">{{ data.hero.titleB }}</span><br>{{ data.hero.titleC }}</h1>
             <p>{{ data.hero.desc }}</p>
             <div class="hero-actions">
-              <button class="cta" @click="switchModule(data.modules[0].key)">开始看结构</button>
-              <button class="secondary-btn" @click="switchModule(data.modules[1].key)">直接看 insight</button>
-              <button class="secondary-btn" onclick="location.href='../glmi-market/'">Open resale prototype ↗</button>
+              <button class="cta" @click="switchModule(data.modules[0].key)">{{ copy.start }}</button>
+              <button class="secondary-btn" @click="switchModule(data.modules[1].key)">{{ copy.insight }}</button>
+              <button class="secondary-btn" onclick="location.href='../glmi-market/'">{{ copy.market }}</button>
             </div>
             <div class="hero-stats">
               <div class="stat" v-for="item in data.hero.stats" :key="item.label">
@@ -121,8 +171,8 @@ createApp({
           </div>
           <div class="illustration">
             <div class="float-card">
-              <h3>🎓 For GLMI</h3>
-              <p>更像一个“问题展示站”，不是死板课堂作业页。</p>
+              <h3>{{ copy.glmiCardTitle }}</h3>
+              <p>{{ copy.glmiCardText }}</p>
             </div>
             <div class="spark-list">
               <div class="spark" v-for="item in data.hero.highlights" :key="item.title">
@@ -137,8 +187,8 @@ createApp({
       <section class="section">
         <div class="section-title">
           <div>
-            <h2>为什么这版更像真的</h2>
-            <p>不是堆字，而是做成像真实项目 landing + pitch companion。</p>
+            <h2>{{ copy.whyTitle }}</h2>
+            <p>{{ copy.whyDesc }}</p>
           </div>
         </div>
         <div class="card-grid">
@@ -154,19 +204,19 @@ createApp({
       <section class="section">
         <div class="section-title">
           <div>
-            <h2>Interactive GLMI Deck</h2>
-            <p>左边切模块，右边像 slide 一样逐步展开。</p>
+            <h2>{{ copy.deckTitle }}</h2>
+            <p>{{ copy.deckDesc }}</p>
           </div>
           <div style="min-width:220px;width:280px">
             <div class="progress"><div :style="{width: progressPercent + '%'}"></div></div>
-            <p style="margin:8px 0 0;color:var(--muted);font-size:14px">整体浏览进度 {{ progressPercent }}%</p>
+            <p style="margin:8px 0 0;color:var(--muted);font-size:14px">{{ copy.overall }} {{ progressPercent }}%</p>
           </div>
         </div>
 
         <div class="module-layout">
           <div class="module-nav">
             <button class="module-btn" :class="{active: currentModule===mod.key}" v-for="mod in data.modules" :key="mod.key" @click="switchModule(mod.key)">
-              <small>Module {{ mod.number }}</small>
+              <small>{{ copy.module }} {{ mod.number }}</small>
               <strong>{{ mod.title }}</strong>
               <span>{{ mod.subtitle }}</span>
             </button>
@@ -217,15 +267,15 @@ createApp({
             <div class="content" v-else-if="step.type==='complete'" v-html="step.html"></div>
 
             <div class="step-actions">
-              <button class="ghost" @click="prevStep">← 上一步</button>
-              <button class="primary" @click="nextStep">下一步 →</button>
+              <button class="ghost" @click="prevStep">{{ copy.prev }}</button>
+              <button class="primary" @click="nextStep">{{ copy.next }}</button>
             </div>
           </div>
         </div>
       </section>
 
       <div class="footer">
-        Built for GLMI · cheerful static Vue site · ready for GitHub Pages
+        {{ copy.footer }}
       </div>
     </div>
   `
