@@ -36,7 +36,7 @@ createApp({
     function answerKey(qi) { return `${language.value}_${currentModule.value}_${currentStep.value}_${qi}`; }
     function choose(qi, picked) { answers.value[answerKey(qi)] = picked; persist(); }
     function resetProgress() { if (confirm(language.value === 'en' ? 'Reset all progress?' : '确定重置所有进度？')) { notes.value = {}; answers.value = {}; currentModule.value = SOURCE[language.value].modules[0].key; currentStep.value = 0; persist(); } }
-    function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    function scrollToSection(id) { const el = document.getElementById(id); if (!el) return; const top = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top, behavior: 'smooth' }); }
     function copyMarketUrl() { navigator.clipboard.writeText(MARKET_URL).then(() => { copied.value = true; setTimeout(() => copied.value = false, 2000); }); }
 
     // Keyboard navigation
@@ -78,9 +78,9 @@ createApp({
             <div>{{ data.brand }}</div>
           </div>
           <div class="nav-links">
-            <button :class="{active: activeSection==='overview'}" @click="scrollToSection('overview')">{{ data.overviewCards[0].eyebrow }}</button>
-            <button :class="{active: activeSection==='discussion'}" @click="scrollToSection('discussion')">{{ data.overviewCards[1].eyebrow }}</button>
-            <button :class="{active: activeSection==='deck'}" @click="scrollToSection('deck')">{{ data.overviewCards[2].eyebrow }}</button>
+            <button :class="{active: activeSection==='overview'}" @click="activeSection='overview'; scrollToSection('overview')">{{ data.overviewCards[0].eyebrow }}</button>
+            <button :class="{active: activeSection==='discussion'}" @click="activeSection='discussion'; scrollToSection('discussion')">{{ data.overviewCards[1].eyebrow }}</button>
+            <button :class="{active: activeSection==='deck'}" @click="activeSection='deck'; scrollToSection('deck')">{{ data.overviewCards[2].eyebrow }}</button>
             <button @click="toggleLanguage()">{{ data.actions.lang }}</button>
           </div>
         </div>
