@@ -43,10 +43,12 @@ body{min-height:100vh}
 .float-card p{margin:0;color:var(--muted);line-height:1.65}
 .spark-list{display:grid;gap:10px;margin-top:10px}.spark{padding:12px 14px;border-radius:18px;background:linear-gradient(135deg,#fff,#fff6fd);border:1px solid var(--line)}
 .section{margin-top:26px;background:var(--panel);backdrop-filter:blur(8px);border:1px solid #fff;border-radius:28px;padding:24px;box-shadow:var(--shadow)}
+.qr-layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}.qr-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;text-align:center}.qr-image{width:100%;max-width:260px;border-radius:18px;background:#fff;padding:10px;border:1px solid var(--line)}.qr-caption{margin:12px 0 6px;font-weight:800;color:var(--muted)}.qr-link{word-break:break-all;color:var(--purple);font-weight:700;text-decoration:none}.qr-notes{display:grid;gap:16px}
 .section-title{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
 .section-title h2{margin:0;font-family:"Baloo 2",cursive;font-size:34px}
 .section-title p{margin:0;color:var(--muted)}
 .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.single-col{grid-template-columns:1fr}
 .card{background:var(--panel-strong);border:1px solid var(--line);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:10px}
 .card .eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
 .card h3{margin:0;font-size:22px;font-family:"Baloo 2",cursive}
@@ -72,4 +74,4 @@ body{min-height:100vh}
 .code{background:#2a213b;color:#f8f7ff;border-radius:20px;padding:16px;overflow:auto;font-family:ui-monospace,SFMono-Regular,monospace;line-height:1.7}
 .step-actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px}.step-actions button{border:none;border-radius:16px;padding:12px 18px;font-weight:800;cursor:pointer}.ghost{background:#f3ebff;color:#5d469b}.primary{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff}
 .footer{margin:24px 0 50px;text-align:center;color:var(--muted)}
-@media (max-width: 980px){.hero-grid,.module-layout,.card-grid{grid-template-columns:1fr}.hero h1{font-size:46px}.hero-stats{grid-template-columns:1fr}.shell{padding:14px}}
+@media (max-width: 980px){.hero-grid,.module-layout,.card-grid,.qr-layout{grid-template-columns:1fr}.hero h1{font-size:46px}.hero-stats{grid-template-columns:1fr}.shell{padding:14px}}

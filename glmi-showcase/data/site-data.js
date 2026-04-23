@@ -20,6 +20,22 @@ window.GLMI_SITE_DATA = {
     },
     overviewTitle: 'Why this overview matters',
     overviewDesc: 'It turns our raw project thinking into a cleaner, more presentable narrative.',
+    showcaseFlow: {
+      title: 'How we guide the class through it',
+      desc: 'We use the showcase page to frame the problem first, then invite people into the prototype when the story is clear.',
+      steps: [
+        { title: 'Start with the challenge', text: 'We explain the student pain point before showing product screens, so the audience sees why the concept exists.' },
+        { title: 'Move through the logic', text: 'We use the modules to keep the discussion structured: problem, evidence, and delivery.' },
+        { title: 'Let people try the prototype', text: 'When the framing is clear, we invite classmates to scan the QR code and explore the marketplace themselves.' }
+      ]
+    },
+    qrPanel: {
+      title: 'Scan to try the prototype',
+      desc: 'Classmates can scan this code on their phones to open the market prototype directly during the presentation.',
+      caption: 'Prototype URL',
+      url: 'https://kndhjk.github.io/ms365-hci-learning/glmi-market/',
+      tip: 'This helps us shift from explanation to live exploration without asking people to type the link manually.'
+    },
     overviewCards: [
       {
         eyebrow: 'Shared understanding',
@@ -55,6 +71,14 @@ window.GLMI_SITE_DATA = {
     moduleCard: {
       title: 'For project review',
       text: 'This page functions as a high-level guide to the concept, not as a final product claim.'
+    },
+    discussionPanel: {
+      title: 'What this page helps us do in discussion',
+      points: [
+        'Keep the conversation anchored on the student problem instead of jumping too quickly into features.',
+        'Show that the marketplace is one response inside a broader systems challenge, not just a random app idea.',
+        'Make it easier for classmates and tutors to react to the concept, ask sharper questions, and test assumptions.'
+      ]
     },
     footer: 'NeighbourLoop · project overview page · built for clear GLMI presentation',
     modules: [
@@ -220,6 +244,22 @@ window.GLMI_SITE_DATA = {
     },
     overviewTitle: '为什么需要这个总览页',
     overviewDesc: '它把原本比较散的项目想法，整理成更适合展示和讨论的结构。',
+    showcaseFlow: {
+      title: '我们怎么带着全班一起看',
+      desc: '我们先用这个页面把问题讲清楚，再把大家带到原型里自己体验。',
+      steps: [
+        { title: '先讲挑战', text: '先让大家理解学生面对的真实问题，而不是一上来就看产品界面。' },
+        { title: '再讲逻辑', text: '通过模块结构，把问题、证据和表达方式按顺序讲清楚。' },
+        { title: '最后让大家试用', text: '等逻辑清楚后，再让同学扫码进入 market prototype 自己体验。' }
+      ]
+    },
+    qrPanel: {
+      title: '扫码体验原型',
+      desc: '同学们可以直接用手机扫码，现场打开 market prototype。',
+      caption: '原型链接',
+      url: 'https://kndhjk.github.io/ms365-hci-learning/glmi-market/',
+      tip: '这样我们就可以很自然地从“讲概念”切换到“现场体验”，不用让大家手动输入网址。'
+    },
     overviewCards: [
       {
         eyebrow: '统一理解',
@@ -255,6 +295,14 @@ window.GLMI_SITE_DATA = {
     moduleCard: {
       title: '🎓 用于项目讲解',
       text: '这个页面是项目总览入口，不是最终产品成品页。'
+    },
+    discussionPanel: {
+      title: '这个页面对讨论有什么帮助',
+      points: [
+        '让讨论始终围绕学生问题本身，而不是太快跳进功能细节。',
+        '让 marketplace 看起来像是对系统性挑战的一种回应，而不是突然冒出来的 app 点子。',
+        '方便同学和老师在理解概念之后，提出更具体的问题、反馈和质疑。'
+      ]
     },
     footer: 'NeighbourLoop · 项目总览页 · 用于更清楚地展示 GLMI 概念',
     modules: [
