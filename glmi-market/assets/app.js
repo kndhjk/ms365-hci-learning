@@ -1,6 +1,6 @@
 const { createApp, computed, ref } = Vue;
 const market = window.CAMPUS_LOOP_DATA;
-const STORE = 'campus-loop-market-v3';
+const STORE = 'campus-loop-market-v4';
 
 createApp({
   setup() {
@@ -18,10 +18,12 @@ createApp({
     const showNotifications = ref(false);
     const showProfileMenu = ref(false);
     const loading = ref(false);
+    const sidebarOpen = ref(saved.sidebarOpen ?? true);
     const reserveQueue = ref(saved.reserveQueue || []);
     const soldItems = ref(saved.soldItems || []);
     const postedItems = ref(saved.postedItems || []);
     const activeGalleryIndex = ref(0);
+    const recentlyViewed = ref(saved.recentlyViewed || []);
     const myDraft = ref(saved.myDraft || {
       title: '', price: '', category: 'Textbooks', condition: 'Used - very good', campus: 'City Campus', pickup: '', desc: ''
     });
@@ -35,6 +37,9 @@ createApp({
     const myActiveListings = computed(() => postedItems.value.filter(item => !soldItems.value.includes(item.id)));
     const mySoldListings = computed(() => postedItems.value.filter(item => soldItems.value.includes(item.id)));
     const selectedGallery = computed(() => selected.value?.gallery || [selected.value?.emoji || '📦']);
+    const recentItems = computed(() => recentlyViewed.value.map(id => visibleListings.value.find(item => item.id === id)).filter(Boolean).slice(0, 4));
+    const recommended = computed(() => visibleListings.value.filter(item => item.category === category.value || category.value === 'All').slice(0, 4));
+    const alertCount = computed(() => notifications.value.length + reserveQueue.value.length);
 
     const filtered = computed(() => {
       let items = visibleListings.value.filter(item => {
@@ -63,7 +68,9 @@ createApp({
         postedItems: postedItems.value,
         myDraft: myDraft.value,
         reserveQueue: reserveQueue.value,
-        soldItems: soldItems.value
+        soldItems: soldItems.value,
+        sidebarOpen: sidebarOpen.value,
+        recentlyViewed: recentlyViewed.value
       }));
     }
 
@@ -92,13 +99,23 @@ createApp({
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function toggleSidebar() {
+      sidebarOpen.value = !sidebarOpen.value;
+      persist();
+    }
+
     function setCategory(c) { category.value = c; persist(); }
     function toggleLike(id) {
       liked.value = liked.value.includes(id) ? liked.value.filter(x => x !== id) : [...liked.value, id];
       persist();
       ping(liked.value.includes(id) ? 'Saved to your shortlist.' : 'Removed from saved items.');
     }
-    function openListing(item) { selected.value = item; activeGalleryIndex.value = 0; }
+    function openListing(item) {
+      selected.value = item;
+      activeGalleryIndex.value = 0;
+      recentlyViewed.value = [item.id, ...recentlyViewed.value.filter(x => x !== item.id)].slice(0, 8);
+      persist();
+    }
     function closeListing() { selected.value = null; }
     function openSeller(name) { sellerProfile.value = name; }
     function closeSeller() { sellerProfile.value = null; }
@@ -181,6 +198,10 @@ createApp({
       showNotifications,
       showProfileMenu,
       loading,
+      sidebarOpen,
+      recentItems,
+      recommended,
+      alertCount,
       persist,
       go,
       setCategory,
@@ -195,289 +216,324 @@ createApp({
       fakeAction,
       submitListing,
       fakeRefresh,
+      toggleSidebar,
       toast
     };
   },
   template: `
-    <div class="wrap">
-      <div class="topbar">
-        <div class="brand"><div class="brand-badge">♻️</div><div>Campus Loop Market</div></div>
-        <div class="nav-actions">
+    <div class="market-shell" :class="{collapsed: !sidebarOpen}">
+      <aside class="sidebar" :class="{closed: !sidebarOpen}">
+        <div class="sidebar-head">
+          <div class="brand"><div class="brand-badge">♻️</div><div v-if="sidebarOpen">Campus Loop Market</div></div>
+          <button class="collapse-btn" @click="toggleSidebar">{{ sidebarOpen ? '←' : '→' }}</button>
+        </div>
+
+        <div class="sidebar-section" v-if="sidebarOpen">
+          <button class="profile-chip sidebar-profile" @click="showProfileMenu = !showProfileMenu">{{ market.currentUser.avatar }} {{ market.currentUser.name }}</button>
+        </div>
+
+        <div class="sidebar-nav">
           <button :class="{navon: page==='browse'}" @click="go('browse')">Browse</button>
           <button :class="{navon: page==='sell'}" @click="go('sell')">Sell an item</button>
           <button :class="{navon: page==='saved'}" @click="go('saved')">Saved</button>
           <button :class="{navon: page==='inbox'}" @click="go('inbox')">Inbox</button>
           <button :class="{navon: page==='my-listings'}" @click="go('my-listings')">My listings</button>
-          <button @click="showNotifications = !showNotifications">Alerts (3)</button>
+          <button @click="showNotifications = !showNotifications">Alerts ({{ alertCount }})</button>
           <button @click="fakeRefresh()">Refresh</button>
-          <button class="profile-chip" @click="showProfileMenu = !showProfileMenu">{{ market.currentUser.avatar }} {{ market.currentUser.name }}</button>
           <button onclick="location.href='../glmi-showcase/'">Project story ↗</button>
         </div>
-      </div>
 
-      <div class="profile-menu" v-if="showProfileMenu">
-        <div class="panel">
-          <div class="profile-head">
-            <div class="seller-avatar">{{ market.currentUser.avatar }}</div>
-            <div>
-              <strong>{{ market.currentUser.name }}</strong>
-              <p>{{ market.currentUser.badge }}</p>
-            </div>
-          </div>
-          <div class="pill-row">
-            <span class="pill">{{ market.currentUser.replies }}</span>
-            <span class="pill">{{ market.currentUser.savedSearches }} saved searches</span>
-            <span class="pill">{{ market.currentUser.joined }}</span>
-          </div>
-          <div class="card-actions" style="margin-top:12px">
-            <button class="ghost" @click="go('saved')">View saved items</button>
-            <button class="ghost" @click="go('my-listings')">Seller dashboard</button>
-          </div>
+        <div class="sidebar-section" v-if="sidebarOpen && recentItems.length">
+          <div class="sidebar-title">Recently viewed</div>
+          <button class="side-mini" v-for="item in recentItems" :key="item.id" @click="openListing(item)">{{ item.emoji }} {{ item.title }}</button>
         </div>
-      </div>
+      </aside>
 
-      <div class="toast" v-if="toast">{{ toast }}</div>
+      <button class="sidebar-fab" v-if="!sidebarOpen" @click="toggleSidebar">☰</button>
 
-      <section class="hero" v-if="page==='browse'">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">{{ market.hero.badge }}</div>
-            <h1>{{ market.hero.titleA }} <span class="gradient">{{ market.hero.titleB }}</span><br>{{ market.hero.titleC }}</h1>
-            <p>{{ market.hero.desc }}</p>
-            <div class="hero-actions">
-              <button class="primary" @click="document.getElementById('listing-zone')?.scrollIntoView({behavior:'smooth'})">Start browsing</button>
-              <button class="ghost" @click="go('sell')">Post in under a minute</button>
-              <button class="ghost" onclick="location.href='../glmi-showcase/'">See GLMI rationale</button>
-            </div>
-            <div class="stats">
-              <div class="stat" v-for="item in market.hero.stats" :key="item.label">
-                <strong>{{ item.value }}</strong>
-                <span>{{ item.label }}</span>
+      <main class="content-area">
+        <div class="wrap">
+          <div class="profile-menu" v-if="showProfileMenu">
+            <div class="panel">
+              <div class="profile-head">
+                <div class="seller-avatar">{{ market.currentUser.avatar }}</div>
+                <div>
+                  <strong>{{ market.currentUser.name }}</strong>
+                  <p>{{ market.currentUser.badge }}</p>
+                </div>
+              </div>
+              <div class="pill-row">
+                <span class="pill">{{ market.currentUser.replies }}</span>
+                <span class="pill">{{ market.currentUser.savedSearches }} saved searches</span>
+                <span class="pill">{{ market.currentUser.joined }}</span>
+              </div>
+              <div class="card-actions" style="margin-top:12px">
+                <button class="ghost" @click="go('saved')">View saved items</button>
+                <button class="ghost" @click="go('my-listings')">Seller dashboard</button>
               </div>
             </div>
           </div>
-          <div class="preview-board">
-            <div class="floating" v-for="item in market.hero.cards" :key="item.title">
-              <h3>{{ item.title }}</h3>
-              <p>{{ item.text }}</p>
-            </div>
-          </div>
-        </div>
 
-        <div class="searchbar">
-          <input v-model="query" @input="persist" placeholder="Search textbooks, bikes, chairs, pans..." />
-          <select v-model="category" @change="persist">
-            <option v-for="c in market.categories" :key="c">{{ c }}</option>
-          </select>
-          <select v-model="priceLabel" @change="persist">
-            <option v-for="row in market.priceRanges" :key="row.label">{{ row.label }}</option>
-          </select>
-          <select v-model="sortBy" @change="persist">
-            <option value="newest">Sort by newest</option>
-            <option value="popular">Sort by most viewed</option>
-            <option value="price-low">Sort by price low to high</option>
-            <option value="price-high">Sort by price high to low</option>
-          </select>
-          <button @click="fakeRefresh('Running local search...')">Search</button>
-        </div>
-      </section>
+          <div class="toast" v-if="toast">{{ toast }}</div>
 
-      <section class="section" v-if="page==='browse'">
-        <div class="section-title">
-          <div>
-            <h2>Browse by category</h2>
-            <p>Made to feel local, student-friendly, and fast to navigate.</p>
-          </div>
-        </div>
-        <div class="chips">
-          <button class="chip" :class="{active: category===c}" v-for="c in market.categories" :key="c" @click="setCategory(c)">{{ c }}</button>
-        </div>
-      </section>
-
-      <section class="section two-col" v-if="page==='browse'">
-        <div class="panel">
-          <h3>Why students would actually use this</h3>
-          <div v-for="item in market.quickLinks" :key="item.title" style="margin-bottom:14px">
-            <strong style="display:block;margin-bottom:4px">{{ item.title }}</strong>
-            <p style="margin:0">{{ item.text }}</p>
-          </div>
-        </div>
-        <div class="panel">
-          <h3>Seller-side value</h3>
-          <ul>
-            <li v-for="line in market.sellerMoments" :key="line">{{ line }}</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="section" v-if="page==='browse'" id="listing-zone">
-        <div class="section-title">
-          <div>
-            <h2>Fresh listings</h2>
-            <p>{{ filtered.length }} items feel live, searchable, reserveable, and saved to your own local view.</p>
-          </div>
-        </div>
-        <div class="skeleton-grid" v-if="loading">
-          <div class="skeleton-card" v-for="n in 4" :key="n"></div>
-        </div>
-        <div class="empty-state" v-else-if="!filtered.length">
-          <strong>No listings match this filter combination.</strong>
-          <p>Try another category, widen the price range, or search more broadly.</p>
-        </div>
-        <div class="grid" v-else>
-          <article class="card" v-for="item in filtered" :key="item.id">
-            <div class="thumb">{{ item.emoji }}</div>
-            <div class="card-top">
+          <section class="hero" v-if="page==='browse'">
+            <div class="hero-grid">
               <div>
-                <div class="title">{{ item.title }}</div>
-                <div class="meta seller-link" @click="openSeller(item.seller)">{{ item.seller }}</div>
-                <div class="meta">{{ item.posted }} · {{ item.views }} views</div>
+                <div class="eyebrow">{{ market.hero.badge }}</div>
+                <h1>{{ market.hero.titleA }} <span class="gradient">{{ market.hero.titleB }}</span><br>{{ market.hero.titleC }}</h1>
+                <p>{{ market.hero.desc }}</p>
+                <div class="hero-actions">
+                  <button class="primary" @click="document.getElementById('listing-zone')?.scrollIntoView({behavior:'smooth'})">Start browsing</button>
+                  <button class="ghost" @click="go('sell')">Post in under a minute</button>
+                  <button class="ghost" @click="fakeRefresh('Refreshing local recommendations...')">Refresh picks</button>
+                </div>
+                <div class="stats">
+                  <div class="stat" v-for="item in market.hero.stats" :key="item.label">
+                    <strong>{{ item.value }}</strong>
+                    <span>{{ item.label }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="price">NZ$ {{ item.price }}</div>
+              <div class="preview-board">
+                <div class="floating" v-for="item in market.hero.cards" :key="item.title">
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </div>
             </div>
-            <div class="pill-row">
-              <span class="pill">{{ item.category }}</span>
-              <span class="pill">{{ item.condition }}</span>
-              <span class="pill">{{ item.campus }}</span>
-              <span class="pill reserve-pill" v-if="reserveQueue.includes(item.id)">Reserved</span>
+
+            <div class="searchbar">
+              <input v-model="query" @input="persist" placeholder="Search textbooks, bikes, chairs, pans..." />
+              <select v-model="category" @change="persist">
+                <option v-for="c in market.categories" :key="c">{{ c }}</option>
+              </select>
+              <select v-model="priceLabel" @change="persist">
+                <option v-for="row in market.priceRanges" :key="row.label">{{ row.label }}</option>
+              </select>
+              <select v-model="sortBy" @change="persist">
+                <option value="newest">Sort by newest</option>
+                <option value="popular">Sort by most viewed</option>
+                <option value="price-low">Sort by price low to high</option>
+                <option value="price-high">Sort by price high to low</option>
+              </select>
+              <button @click="fakeRefresh('Running local search...')">Search</button>
             </div>
-            <div class="meta">Pickup: {{ item.pickup }}</div>
-            <div class="meta">{{ item.desc }}</div>
-            <div class="card-actions">
-              <button class="save" @click="toggleLike(item.id)">{{ liked.includes(item.id) ? 'Saved ♥' : 'Save' }}</button>
-              <button class="ghost" @click="reserveItem(item)">{{ reserveQueue.includes(item.id) ? 'Reserved' : 'Reserve' }}</button>
-              <button class="contact" @click="openListing(item)">View details</button>
+          </section>
+
+          <section class="section" v-if="page==='browse' && recommended.length">
+            <div class="section-title">
+              <div>
+                <h2>Recommended right now</h2>
+                <p>These cards help the static prototype feel like it is adapting to browsing intent.</p>
+              </div>
             </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section two-col" v-if="page==='browse'">
-        <div class="panel">
-          <h3>Why this concept matters</h3>
-          <ul>
-            <li v-for="p in market.trustPoints" :key="p">{{ p }}</li>
-          </ul>
-        </div>
-        <div class="panel">
-          <h3>How this supports the GLMI story</h3>
-          <div v-for="item in market.glmiAngles" :key="item.title" style="margin-bottom:14px">
-            <strong style="display:block;margin-bottom:4px">{{ item.title }}</strong>
-            <p style="margin:0">{{ item.text }}</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" v-if="page==='saved'">
-        <div class="section-title"><div><h2>Saved items</h2><p>Your shortlist is stored locally to make the prototype feel personal.</p></div></div>
-        <div class="empty-state" v-if="!savedItems.length">
-          <strong>{{ market.savedPanel.empty }}</strong>
-          <p>{{ market.savedPanel.note }}</p>
-          <button class="primary" @click="go('browse')">Start browsing again</button>
-        </div>
-        <div class="grid" v-else>
-          <article class="card" v-for="item in savedItems" :key="item.id">
-            <div class="thumb">{{ item.emoji }}</div>
-            <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">{{ item.seller }}</div></div><div class="price">NZ$ {{ item.price }}</div></div>
-            <div class="meta">{{ item.desc }}</div>
-            <div class="card-actions">
-              <button class="save" @click="toggleLike(item.id)">Remove</button>
-              <button class="ghost" @click="reserveItem(item)">{{ reserveQueue.includes(item.id) ? 'Reserved' : 'Reserve' }}</button>
-              <button class="contact" @click="openListing(item)">Open</button>
+            <div class="recommend-strip">
+              <button class="recommend-card" v-for="item in recommended" :key="item.id" @click="openListing(item)">
+                <span>{{ item.emoji }}</span>
+                <strong>{{ item.title }}</strong>
+                <small>NZ$ {{ item.price }}</small>
+              </button>
             </div>
-          </article>
-        </div>
-      </section>
+          </section>
 
-      <section class="section sell-layout" v-if="page==='sell'">
-        <div class="panel">
-          <h3>Create a listing</h3>
-          <p>This form is fully interactive and posts to your local prototype state, so the product feels alive during demos.</p>
-          <div class="form-grid">
-            <label><span>Title</span><input v-model="myDraft.title" @input="persist" placeholder="e.g. Rice cooker, almost new" /></label>
-            <label><span>Price (NZD)</span><input v-model="myDraft.price" @input="persist" type="number" placeholder="45" /></label>
-            <label><span>Category</span><select v-model="myDraft.category" @change="persist"><option v-for="c in market.categories.slice(1)" :key="c">{{ c }}</option></select></label>
-            <label><span>Condition</span><select v-model="myDraft.condition" @change="persist"><option v-for="c in market.conditions" :key="c">{{ c }}</option></select></label>
-            <label><span>Campus</span><select v-model="myDraft.campus" @change="persist"><option v-for="c in market.campi" :key="c">{{ c }}</option></select></label>
-            <label><span>Pickup point</span><input v-model="myDraft.pickup" @input="persist" placeholder="e.g. Kate Edger lobby" /></label>
-            <label class="full"><span>Description</span><textarea v-model="myDraft.desc" @input="persist" placeholder="Add a short, trustworthy description that feels easy to scan."></textarea></label>
-          </div>
-          <div class="card-actions"><button class="primary" @click="submitListing">Publish listing</button><button class="ghost" @click="fakeAction('Draft auto-saved locally.')">Save draft</button></div>
-        </div>
-        <div class="panel">
-          <h3>Listing tips</h3>
-          <ul>
-            <li>Use specific campus pickup locations to make the listing feel trustworthy.</li>
-            <li>Keep the title short and practical so students can scan fast.</li>
-            <li>Reasonable pricing makes the product feel more real in a presentation.</li>
-            <li>Items published here appear in the main feed and seller dashboard immediately.</li>
-          </ul>
-          <div class="detail-note">Once published, the listing appears in your local “My listings” page and in the main browse feed.</div>
-        </div>
-      </section>
-
-      <section class="section inbox-layout" v-if="page==='inbox'">
-        <div class="thread-list panel">
-          <h3>Inbox</h3>
-          <button class="thread-row" :class="{threadon: inboxThread===thread.id}" v-for="thread in market.fakeInbox" :key="thread.id" @click="inboxThread = thread.id; persist()">
-            <div class="thread-avatar">{{ thread.avatar }}</div>
-            <div>
-              <strong>{{ thread.seller }}</strong>
-              <p>{{ thread.item }}</p>
+          <section class="section" v-if="page==='browse'">
+            <div class="section-title">
+              <div>
+                <h2>Browse by category</h2>
+                <p>Made to feel local, student-friendly, and fast to navigate.</p>
+              </div>
             </div>
-          </button>
-        </div>
-        <div class="panel" v-if="activeThread">
-          <h3>{{ activeThread.itemEmoji }} {{ activeThread.item }}</h3>
-          <div class="message-stack">
-            <div v-for="(msg, idx) in activeThread.messages" :key="idx" class="bubble" :class="msg.from==='me' ? 'me' : 'them'">
-              <strong>{{ msg.from==='me' ? 'You' : activeThread.seller }}</strong>
-              <p>{{ msg.text }}</p>
-              <span>{{ msg.time }}</span>
+            <div class="chips">
+              <button class="chip" :class="{active: category===c}" v-for="c in market.categories" :key="c" @click="setCategory(c)">{{ c }}</button>
             </div>
-          </div>
-          <div class="reply-bar">
-            <input placeholder="Type a reply to keep the conversation feeling real..." />
-            <button class="primary" @click="fakeAction('Reply sent in prototype mode.')">Send</button>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <section class="section" v-if="page==='my-listings'">
-        <div class="section-title"><div><h2>My listings</h2><p>Published items appear here so the seller journey feels complete.</p></div></div>
-        <div class="empty-state" v-if="!postedItems.length">
-          <strong>You have not posted anything yet.</strong>
-          <p>Create a listing to make the marketplace feel truly two-sided.</p>
-          <button class="primary" @click="go('sell')">Create your first listing</button>
-        </div>
-        <div v-else>
-          <div class="section-subtitle">Active</div>
-          <div class="grid" style="margin-bottom:18px">
-            <article class="card" v-for="item in myActiveListings" :key="item.id">
-              <div class="thumb">{{ item.emoji }}</div>
-              <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">{{ item.posted }}</div></div><div class="price">NZ$ {{ item.price }}</div></div>
-              <div class="pill-row"><span class="pill">{{ item.category }}</span><span class="pill">{{ item.condition }}</span><span class="pill">{{ item.campus }}</span></div>
-              <div class="meta">{{ item.desc }}</div>
-              <div class="card-actions"><button class="save" @click="fakeAction('Listing bumped to the top of local feed.')">Boost</button><button class="ghost" @click="markSold(item)">Mark sold</button><button class="contact" @click="openListing(item)">Preview</button></div>
-            </article>
-          </div>
-          <div class="section-subtitle" v-if="mySoldListings.length">Sold archive</div>
-          <div class="grid" v-if="mySoldListings.length">
-            <article class="card sold-card" v-for="item in mySoldListings" :key="item.id">
-              <div class="thumb">{{ item.emoji }}</div>
-              <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">Completed listing</div></div><div class="price">Sold</div></div>
-              <div class="meta">{{ item.desc }}</div>
-            </article>
-          </div>
-        </div>
-      </section>
+          <section class="section two-col" v-if="page==='browse'">
+            <div class="panel">
+              <h3>Why students would actually use this</h3>
+              <div v-for="item in market.quickLinks" :key="item.title" style="margin-bottom:14px">
+                <strong style="display:block;margin-bottom:4px">{{ item.title }}</strong>
+                <p style="margin:0">{{ item.text }}</p>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Seller-side value</h3>
+              <ul>
+                <li v-for="line in market.sellerMoments" :key="line">{{ line }}</li>
+              </ul>
+            </div>
+          </section>
 
-      <section class="section" v-if="showNotifications">
-        <div class="section-title"><div><h2>Recent alerts</h2><p>These lightweight cues help the static prototype feel actively used.</p></div></div>
-        <div class="panel" v-for="(note, idx) in notifications" :key="idx" style="margin-bottom:12px"><p style="margin:0">{{ note }}</p></div>
-      </section>
+          <section class="section" v-if="page==='browse'" id="listing-zone">
+            <div class="section-title">
+              <div>
+                <h2>Fresh listings</h2>
+                <p>{{ filtered.length }} items feel live, searchable, reserveable, and saved to your own local view.</p>
+              </div>
+            </div>
+            <div class="skeleton-grid" v-if="loading">
+              <div class="skeleton-card" v-for="n in 4" :key="n"></div>
+            </div>
+            <div class="empty-state" v-else-if="!filtered.length">
+              <strong>No listings match this filter combination.</strong>
+              <p>Try another category, widen the price range, or search more broadly.</p>
+            </div>
+            <div class="grid" v-else>
+              <article class="card" v-for="item in filtered" :key="item.id">
+                <div class="thumb">{{ item.emoji }}</div>
+                <div class="card-top">
+                  <div>
+                    <div class="title">{{ item.title }}</div>
+                    <div class="meta seller-link" @click="openSeller(item.seller)">{{ item.seller }}</div>
+                    <div class="meta">{{ item.posted }} · {{ item.views }} views</div>
+                  </div>
+                  <div class="price">NZ$ {{ item.price }}</div>
+                </div>
+                <div class="pill-row">
+                  <span class="pill">{{ item.category }}</span>
+                  <span class="pill">{{ item.condition }}</span>
+                  <span class="pill">{{ item.campus }}</span>
+                  <span class="pill reserve-pill" v-if="reserveQueue.includes(item.id)">Reserved</span>
+                </div>
+                <div class="meta">Pickup: {{ item.pickup }}</div>
+                <div class="meta">{{ item.desc }}</div>
+                <div class="card-actions">
+                  <button class="save" @click="toggleLike(item.id)">{{ liked.includes(item.id) ? 'Saved ♥' : 'Save' }}</button>
+                  <button class="ghost" @click="reserveItem(item)">{{ reserveQueue.includes(item.id) ? 'Reserved' : 'Reserve' }}</button>
+                  <button class="contact" @click="openListing(item)">View details</button>
+                </div>
+              </article>
+            </div>
+          </section>
 
-      <div class="footer">Campus Loop Market · static but presentation-ready · every major path is clickable for demo flow</div>
+          <section class="section two-col" v-if="page==='browse'">
+            <div class="panel">
+              <h3>Why this concept matters</h3>
+              <ul>
+                <li v-for="p in market.trustPoints" :key="p">{{ p }}</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>How this supports the GLMI story</h3>
+              <div v-for="item in market.glmiAngles" :key="item.title" style="margin-bottom:14px">
+                <strong style="display:block;margin-bottom:4px">{{ item.title }}</strong>
+                <p style="margin:0">{{ item.text }}</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" v-if="page==='saved'">
+            <div class="section-title"><div><h2>Saved items</h2><p>Your shortlist is stored locally to make the prototype feel personal.</p></div></div>
+            <div class="empty-state" v-if="!savedItems.length">
+              <strong>{{ market.savedPanel.empty }}</strong>
+              <p>{{ market.savedPanel.note }}</p>
+              <button class="primary" @click="go('browse')">Start browsing again</button>
+            </div>
+            <div class="grid" v-else>
+              <article class="card" v-for="item in savedItems" :key="item.id">
+                <div class="thumb">{{ item.emoji }}</div>
+                <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">{{ item.seller }}</div></div><div class="price">NZ$ {{ item.price }}</div></div>
+                <div class="meta">{{ item.desc }}</div>
+                <div class="card-actions">
+                  <button class="save" @click="toggleLike(item.id)">Remove</button>
+                  <button class="ghost" @click="reserveItem(item)">{{ reserveQueue.includes(item.id) ? 'Reserved' : 'Reserve' }}</button>
+                  <button class="contact" @click="openListing(item)">Open</button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="section sell-layout" v-if="page==='sell'">
+            <div class="panel">
+              <h3>Create a listing</h3>
+              <p>This form is fully interactive and posts to your local prototype state, so the product feels alive during demos.</p>
+              <div class="form-grid">
+                <label><span>Title</span><input v-model="myDraft.title" @input="persist" placeholder="e.g. Rice cooker, almost new" /></label>
+                <label><span>Price (NZD)</span><input v-model="myDraft.price" @input="persist" type="number" placeholder="45" /></label>
+                <label><span>Category</span><select v-model="myDraft.category" @change="persist"><option v-for="c in market.categories.slice(1)" :key="c">{{ c }}</option></select></label>
+                <label><span>Condition</span><select v-model="myDraft.condition" @change="persist"><option v-for="c in market.conditions" :key="c">{{ c }}</option></select></label>
+                <label><span>Campus</span><select v-model="myDraft.campus" @change="persist"><option v-for="c in market.campi" :key="c">{{ c }}</option></select></label>
+                <label><span>Pickup point</span><input v-model="myDraft.pickup" @input="persist" placeholder="e.g. Kate Edger lobby" /></label>
+                <label class="full"><span>Description</span><textarea v-model="myDraft.desc" @input="persist" placeholder="Add a short, trustworthy description that feels easy to scan."></textarea></label>
+              </div>
+              <div class="card-actions"><button class="primary" @click="submitListing">Publish listing</button><button class="ghost" @click="fakeAction('Draft auto-saved locally.')">Save draft</button></div>
+            </div>
+            <div class="panel">
+              <h3>Listing tips</h3>
+              <ul>
+                <li>Use specific campus pickup locations to make the listing feel trustworthy.</li>
+                <li>Keep the title short and practical so students can scan fast.</li>
+                <li>Reasonable pricing makes the product feel more real in a presentation.</li>
+                <li>Items published here appear in the main feed and seller dashboard immediately.</li>
+              </ul>
+              <div class="detail-note">Once published, the listing appears in your local “My listings” page and in the main browse feed.</div>
+            </div>
+          </section>
+
+          <section class="section inbox-layout" v-if="page==='inbox'">
+            <div class="thread-list panel">
+              <h3>Inbox</h3>
+              <button class="thread-row" :class="{threadon: inboxThread===thread.id}" v-for="thread in market.fakeInbox" :key="thread.id" @click="inboxThread = thread.id; persist()">
+                <div class="thread-avatar">{{ thread.avatar }}</div>
+                <div>
+                  <strong>{{ thread.seller }}</strong>
+                  <p>{{ thread.item }}</p>
+                </div>
+              </button>
+            </div>
+            <div class="panel" v-if="activeThread">
+              <h3>{{ activeThread.itemEmoji }} {{ activeThread.item }}</h3>
+              <div class="message-stack">
+                <div v-for="(msg, idx) in activeThread.messages" :key="idx" class="bubble" :class="msg.from==='me' ? 'me' : 'them'">
+                  <strong>{{ msg.from==='me' ? 'You' : activeThread.seller }}</strong>
+                  <p>{{ msg.text }}</p>
+                  <span>{{ msg.time }}</span>
+                </div>
+              </div>
+              <div class="reply-bar">
+                <input placeholder="Type a reply to keep the conversation feeling real..." />
+                <button class="primary" @click="fakeAction('Reply sent in prototype mode.')">Send</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" v-if="page==='my-listings'">
+            <div class="section-title"><div><h2>My listings</h2><p>Published items appear here so the seller journey feels complete.</p></div></div>
+            <div class="empty-state" v-if="!postedItems.length">
+              <strong>You have not posted anything yet.</strong>
+              <p>Create a listing to make the marketplace feel truly two-sided.</p>
+              <button class="primary" @click="go('sell')">Create your first listing</button>
+            </div>
+            <div v-else>
+              <div class="section-subtitle">Active</div>
+              <div class="grid" style="margin-bottom:18px">
+                <article class="card" v-for="item in myActiveListings" :key="item.id">
+                  <div class="thumb">{{ item.emoji }}</div>
+                  <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">{{ item.posted }}</div></div><div class="price">NZ$ {{ item.price }}</div></div>
+                  <div class="pill-row"><span class="pill">{{ item.category }}</span><span class="pill">{{ item.condition }}</span><span class="pill">{{ item.campus }}</span></div>
+                  <div class="meta">{{ item.desc }}</div>
+                  <div class="card-actions"><button class="save" @click="fakeAction('Listing bumped to the top of local feed.')">Boost</button><button class="ghost" @click="markSold(item)">Mark sold</button><button class="contact" @click="openListing(item)">Preview</button></div>
+                </article>
+              </div>
+              <div class="section-subtitle" v-if="mySoldListings.length">Sold archive</div>
+              <div class="grid" v-if="mySoldListings.length">
+                <article class="card sold-card" v-for="item in mySoldListings" :key="item.id">
+                  <div class="thumb">{{ item.emoji }}</div>
+                  <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">Completed listing</div></div><div class="price">Sold</div></div>
+                  <div class="meta">{{ item.desc }}</div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" v-if="showNotifications">
+            <div class="section-title"><div><h2>Recent alerts</h2><p>These lightweight cues help the static prototype feel actively used.</p></div></div>
+            <div class="panel" v-for="(note, idx) in notifications" :key="idx" style="margin-bottom:12px"><p style="margin:0">{{ note }}</p></div>
+          </section>
+
+          <div class="footer">Campus Loop Market · static but presentation-ready · every major path is clickable for demo flow</div>
+        </div>
+      </main>
 
       <div class="modal-backdrop" v-if="selected" @click.self="closeListing">
         <div class="modal">
