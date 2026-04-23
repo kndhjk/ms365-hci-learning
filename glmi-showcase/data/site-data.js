@@ -1,193 +1,402 @@
 window.GLMI_SITE_DATA = {
-  brand: 'Our GLMI Project Walkthrough',
-  hero: {
-    eyebrow: 'A quick intro page for our friends and teammates',
-    titleA: 'This is the',
-    titleB: 'project site',
-    titleC: 'we made for our GLMI idea.',
-    desc: 'We built this page so people can understand our concept quickly without needing the full backstory first. It is not meant to pretend the startup is already finished. It is meant to show how we are framing the problem, why we think it matters, and how the resale marketplace prototype fits into the bigger idea.',
-    stats: [
-      { value: '3', label: 'core sections' },
-      { value: '1', label: 'market prototype link' },
-      { value: 'team', label: 'voice and framing' }
+  en: {
+    brand: 'NeighbourLoop Project Overview',
+    hero: {
+      eyebrow: 'Student-to-student resale concept overview',
+      titleA: 'A clearer look at',
+      titleB: 'our team project',
+      titleC: 'and the thinking behind it.',
+      desc: 'This page is designed as a clean overview of our GLMI concept. It helps friends, teammates, and reviewers understand the problem we are focusing on, why we think it matters, and how the marketplace prototype connects to the broader idea.',
+      stats: [
+        { value: '3', label: 'core sections' },
+        { value: '1', label: 'prototype pathway' },
+        { value: 'team', label: 'project perspective' }
+      ],
+      highlights: [
+        { title: 'Clearer framing', text: 'We use this page to explain the problem, the opportunity, and the product direction in one place.' },
+        { title: 'Presentation support', text: 'It gives us a simple way to walk people through the idea before showing the prototype.' },
+        { title: 'Easy to evolve', text: 'As the project develops, this overview can be updated without changing the whole structure.' }
+      ]
+    },
+    overviewTitle: 'Why this overview matters',
+    overviewDesc: 'It turns our raw project thinking into a cleaner, more presentable narrative.',
+    overviewCards: [
+      {
+        eyebrow: 'Shared understanding',
+        title: 'It helps us explain the concept consistently',
+        text: 'Instead of relying on scattered notes, we use this page to keep the team aligned on the same project logic.',
+        pills: ['Clarity', 'Alignment', 'Structure']
+      },
+      {
+        eyebrow: 'Pitch support',
+        title: 'It makes the idea easier to present',
+        text: 'The layout is designed to move from problem framing to evidence and then into the prototype direction.',
+        pills: ['Flow', 'Pitch-ready', 'Visual guide']
+      },
+      {
+        eyebrow: 'Project development',
+        title: 'It gives the project a more credible public-facing layer',
+        text: 'This makes the concept feel more coherent and easier to discuss, refine, and show to other people.',
+        pills: ['Credibility', 'Iteration', 'Team project']
+      }
     ],
-    highlights: [
-      { title: 'Why we built this page', text: 'We wanted one clean place to explain what we are making and why we think it matters.' },
-      { title: 'What to focus on', text: 'Look at the problem, the student need, and the reason a campus-specific resale platform makes sense.' },
-      { title: 'How to use it', text: 'Start here for the logic, then jump to the market prototype for the product experience.' }
+    deckTitle: 'Interactive project walkthrough',
+    deckDesc: 'Use the module list to move through the concept step by step.',
+    progressLabel: 'Overall progress',
+    moduleLabel: 'Module',
+    actions: {
+      start: 'Start with the structure',
+      insight: 'Jump to the evidence',
+      market: 'Open marketplace prototype ↗',
+      prev: '← Previous',
+      next: 'Next →',
+      lang: '中文'
+    },
+    moduleCard: {
+      title: 'For project review',
+      text: 'This page functions as a high-level guide to the concept, not as a final product claim.'
+    },
+    footer: 'NeighbourLoop · project overview page · built for clear GLMI presentation',
+    modules: [
+      {
+        key: 'problem',
+        number: '01',
+        title: 'Problem Framing',
+        subtitle: 'What student problem are we actually trying to solve?',
+        steps: [
+          {
+            type: 'content',
+            title: 'Why this problem matters',
+            html: `
+              <h2>We begin with the problem, not the solution</h2>
+              <p>A stronger GLMI concept does not start by showing off features. It starts by explaining why a real problem exists, why it persists, and why it deserves attention.</p>
+              <div class="callout">In our case, the issue is not simply that students want cheaper items. The deeper issue is that access, trust, convenience, timing, and waste all interact in a way that creates repeated friction.</div>
+              <h3>What we want people to understand</h3>
+              <ul>
+                <li>Students often need affordable essentials quickly at the start of a term or during a housing move.</li>
+                <li>Useful goods already exist within the student community, but they are hard to exchange efficiently.</li>
+                <li>The current process feels fragmented, low-trust, and often more effortful than simply buying new.</li>
+                <li>This creates both financial strain and unnecessary waste.</li>
+              </ul>
+              <table>
+                <tr><th>Layer</th><th>How we explain it</th></tr>
+                <tr><td>Visible issue</td><td>Students struggle to find affordable second-hand goods in a simple and trusted way.</td></tr>
+                <tr><td>Behavioural issue</td><td>People default to buying new because the second-hand process feels messy or inconvenient.</td></tr>
+                <tr><td>System issue</td><td>There is no strong campus-centred channel that makes reuse easy, social, and reliable.</td></tr>
+              </table>
+            `
+          },
+          {
+            type: 'note',
+            title: '📝 Draft the problem statement',
+            prompt: 'Write a short version of the problem, then add two lines explaining why it is persistent and worth solving.',
+            placeholder: 'Example: Students need affordable essentials, but second-hand exchange around campus is often fragmented, low-trust, and inconvenient, which increases both cost pressure and avoidable waste.'
+          },
+          {
+            type: 'quiz',
+            title: 'Problem framing check',
+            questions: [
+              {
+                q: 'Which opening sounds stronger for a GLMI concept?',
+                options: ['We built a cool app with many features', 'We identified a recurring student problem and want to define the problem clearly first', 'We mainly want to talk about monetisation', 'We can solve everything instantly with technology'],
+                answer: 1,
+                explanation: 'Problem-first framing is more credible and better aligned with the course logic.'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        key: 'evidence',
+        number: '02',
+        title: 'Evidence & Insight',
+        subtitle: 'How the concept is supported by observation and interpretation',
+        steps: [
+          {
+            type: 'content',
+            title: 'What makes the case believable',
+            html: `
+              <h2>We need evidence that feels connected, not random</h2>
+              <p>A convincing concept is supported by a chain of observation, interpretation, and relevance. It is not just one dramatic claim.</p>
+              <ul>
+                <li><strong>Observation</strong>: Students often face high setup costs and fast-moving housing transitions.</li>
+                <li><strong>Pattern</strong>: Many useful goods are still circulating informally, but exchange is inconsistent and hard to trust.</li>
+                <li><strong>Interpretation</strong>: The issue is not only affordability. It is also convenience, coordination, and confidence.</li>
+                <li><strong>Implication</strong>: A more structured campus resale platform could reduce both economic pressure and waste.</li>
+              </ul>
+              <div class="callout info">The key insight is that this is not just a marketplace problem. It is a coordination and trust problem inside a specific community context.</div>
+              <h3>How we use evidence well</h3>
+              <p>Instead of listing disconnected observations, we turn them into a clearer story about why the concept deserves exploration.</p>
+            `
+          },
+          {
+            type: 'code',
+            title: 'Insight template',
+            code: `Observation -> Pattern -> Interpretation -> Why it matters\n\nExample:\nStudents need household items quickly\n-> but second-hand exchange feels inconsistent\n-> because useful goods are scattered across informal channels\n-> so the opportunity is to create a trusted, campus-specific loop for reuse.`
+          },
+          {
+            type: 'note',
+            title: '📝 Turn evidence into insight',
+            prompt: 'Take one observation and rewrite it as a pattern plus interpretation.',
+            placeholder: 'Observation: Students often throw away useful goods during move-out.\nInsight: The issue is not only waste itself, but the absence of a simple system for redistribution within the campus community.'
+          }
+        ]
+      },
+      {
+        key: 'delivery',
+        number: '03',
+        title: 'Pitch Direction',
+        subtitle: 'How we want the concept to be understood',
+        steps: [
+          {
+            type: 'content',
+            title: 'How we present the concept',
+            html: `
+              <h2>We want the project to feel thoughtful, not overclaimed</h2>
+              <p>This page is meant to support a clear presentation style. It should show that we understand the problem well and that the prototype is a serious direction rather than an exaggerated promise.</p>
+              <h3>What our delivery should communicate</h3>
+              <ul>
+                <li>We are identifying a real student problem.</li>
+                <li>We understand that the challenge has both practical and structural dimensions.</li>
+                <li>We are using the prototype to explore a possible response, not to pretend the work is already finished.</li>
+                <li>We see the concept as relevant to sustainability, affordability, and student experience.</li>
+              </ul>
+              <div class="callout success">A useful line for us is: at this stage, we are not presenting a final venture, but a well-framed opportunity worth developing further.</div>
+              <table>
+                <tr><th>Goal</th><th>Better wording</th></tr>
+                <tr><td>Sound grounded</td><td>“We are still refining the concept and testing the assumptions behind it.”</td></tr>
+                <tr><td>Sound thoughtful</td><td>“We want to avoid jumping too quickly into solution mode.”</td></tr>
+                <tr><td>Sound relevant</td><td>“This connects cost pressure, reuse, and student transitions in one system-level challenge.”</td></tr>
+              </table>
+            `
+          },
+          {
+            type: 'quiz',
+            title: 'Delivery check',
+            questions: [
+              {
+                q: 'Which line sounds more mature for this kind of project page?',
+                options: ['We already have the perfect answer', 'This problem is easy to solve', 'We are presenting a credible concept direction and refining it further', 'People just need to make better choices'],
+                answer: 2,
+                explanation: 'That sounds more realistic, thoughtful, and credible for a developing project.'
+              }
+            ]
+          },
+          {
+            type: 'complete',
+            title: 'Wrap-up',
+            html: `
+              <h2>This gives us a cleaner way to present the project</h2>
+              <p>From here, we can keep refining the concept, improving the prototype, and tightening the framing as the project develops.</p>
+              <div class="pill-row">
+                <span class="pill">Clear overview</span>
+                <span class="pill">Prototype-linked</span>
+                <span class="pill">Team-facing</span>
+              </div>
+            `
+          }
+        ]
+      }
     ]
   },
-  overviewCards: [
-    {
-      eyebrow: 'For our team',
-      title: 'This page gives us a shared way to explain the idea',
-      text: 'We turned our thinking into a clearer structure so it is easier to discuss, pitch, and improve together.',
-      pills: ['Shared framing', 'Team-friendly', 'Easy to explain']
-    },
-    {
-      eyebrow: 'For presentation',
-      title: 'It helps us walk people through the concept step by step',
-      text: 'Instead of dropping people straight into slides or notes, we can use this page as a simple narrative path.',
-      pills: ['Walkthrough', 'Presentation support', 'Clearer flow']
-    },
-    {
-      eyebrow: 'For iteration',
-      title: 'We can keep updating this as the project gets sharper',
-      text: 'If the problem framing changes, if our user insight improves, or if the prototype evolves, this page can evolve with it.',
-      pills: ['Flexible', 'Editable', 'Fast to update']
-    }
-  ],
-  modules: [
-    {
-      key: 'problem',
-      number: '01',
-      title: 'Problem Framing',
-      subtitle: 'What problem are we actually trying to solve?',
-      steps: [
-        {
-          type: 'content',
-          title: 'Why this problem is worth talking about',
-          html: `
-            <h2>We need to define the problem before we talk about any solution</h2>
-            <p>For GLMI, the most important thing is not jumping too quickly into solution mode. What matters first is showing that the problem is real, meaningful, and complex enough to deserve serious attention.</p>
-            <div class="callout">Our framing should make it clear that this is not just a small inconvenience. It is a problem with social, behavioural, and structural dimensions.</div>
-            <h3>How we want to explain it</h3>
-            <ul>
-              <li>Who is affected by the problem?</li>
-              <li>What are they actually experiencing in everyday life?</li>
-              <li>Why is this not something that can be solved by individual effort alone?</li>
-              <li>Why does this connect to sustainable entrepreneurship and innovation?</li>
-            </ul>
-            <table>
-              <tr><th>Layer</th><th>What we should talk about</th></tr>
-              <tr><td>Surface</td><td>The visible symptom, such as high setup costs, friction, low trust, or wasted items.</td></tr>
-              <tr><td>Behaviour</td><td>Why students do not exchange goods more easily, even when the need clearly exists.</td></tr>
-              <tr><td>System</td><td>How timing, housing turnover, trust, local information, and student budgets all interact.</td></tr>
-            </table>
-          `
-        },
-        {
-          type: 'note',
-          title: '📝 Draft our problem statement',
-          prompt: 'Write one short version of the problem, then add two lines explaining why it is persistent and worth solving.',
-          placeholder: 'Example: Many students need affordable second-hand essentials, but the exchange process is fragmented, inconvenient, and often low-trust, which leads to both wasted goods and unnecessary new spending.'
-        },
-        {
-          type: 'quiz',
-          title: 'Problem framing check',
-          questions: [
-            {
-              q: 'Which opening fits a stronger GLMI problem pitch?',
-              options: ['We already built an app with many features', 'We observed a persistent student problem and want to explain the problem first', 'We mainly want to talk about revenue streams', 'We can solve everything with AI'],
-              answer: 1,
-              explanation: 'Problem-first framing fits the course much better than jumping straight into a solution.'
-            },
-            {
-              q: 'What makes a problem more “wicked”?',
-              options: ['It sounds dramatic', 'It has one simple answer', 'It involves multiple causes, stakeholders, and no single clean fix', 'It only affects one person'],
-              answer: 2,
-              explanation: 'A wicked problem is complex, interconnected, and difficult to solve in a single step.'
-            }
-          ]
-        }
+  zh: {
+    brand: 'NeighbourLoop 项目总览',
+    hero: {
+      eyebrow: '面向朋友、队友与展示场景的项目介绍页',
+      titleA: '这是我们用来说明',
+      titleB: '小组项目',
+      titleC: '思路和原型方向的页面。',
+      desc: '这个页面的作用，是让别人先快速理解我们在做什么、为什么这个问题值得做，以及交易平台原型和整体想法之间的关系。它不是为了假装项目已经完全落地，而是为了把问题、逻辑和方向讲得更清楚。',
+      stats: [
+        { value: '3', label: '核心板块' },
+        { value: '1', label: '原型跳转入口' },
+        { value: 'team', label: '小组视角' }
+      ],
+      highlights: [
+        { title: '更清楚的结构', text: '我们把问题、机会和产品方向整理到同一个页面里。' },
+        { title: '方便展示', text: '这个页面可以先讲逻辑，再带别人看原型。' },
+        { title: '方便继续改', text: '随着项目推进，这个总览页也可以一起更新。' }
       ]
     },
-    {
-      key: 'evidence',
-      number: '02',
-      title: 'Evidence & Insight',
-      subtitle: 'How we connect observation, interviews, and course ideas',
-      steps: [
-        {
-          type: 'content',
-          title: 'Why the evidence has to feel connected',
-          html: `
-            <h2>We do not need endless data, but we do need a believable chain of evidence</h2>
-            <p>A stronger GLMI pitch usually combines several kinds of evidence rather than relying on one dramatic claim.</p>
-            <ul>
-              <li><strong>Observation</strong>: What have we noticed in the real world?</li>
-              <li><strong>Interview or anecdote</strong>: How do actual students describe the issue?</li>
-              <li><strong>Course lens</strong>: How does this connect to wicked problems, belonging, sustainability, or serendipity?</li>
-              <li><strong>Research signal</strong>: Is there broader evidence that this is not just a one-off case?</li>
-            </ul>
-            <div class="callout info">A useful line for us is: we are not claiming there is one single cause. We are arguing that multiple factors make the problem persistent and hard to resolve.</div>
-            <h3>How we should use interview material</h3>
-            <p>Instead of repeating raw quotes, we should turn them into clearer insights.</p>
-            <ul>
-              <li>“I know where to find listings, but it still feels messy and unreliable” → the issue is not access alone, but trust and coordination.</li>
-              <li>“It is easier to buy new than to organise pickup” → the problem includes convenience, not just price.</li>
-            </ul>
-          `
-        },
-        {
-          type: 'code',
-          title: 'Insight template',
-          code: `Observation -> Pattern -> Interpretation -> Why it matters\n\nExample:\nStudents need cheap essentials at the start of term\n-> but many still buy new\n-> because second-hand options feel scattered, low-trust, and time-consuming\n-> so the deeper opportunity is not only lower prices, but a smoother and more trusted exchange system.`
-        },
-        {
-          type: 'note',
-          title: '📝 Turn evidence into insight',
-          prompt: 'Take one observation or interview point and rewrite it as a pattern plus interpretation.',
-          placeholder: 'Observation: Students throw away useful items during move-out.\nInsight: The issue is not only waste itself, but the lack of a simple campus-based mechanism for redistribution.'
-        }
-      ]
+    overviewTitle: '为什么需要这个总览页',
+    overviewDesc: '它把原本比较散的项目想法，整理成更适合展示和讨论的结构。',
+    overviewCards: [
+      {
+        eyebrow: '统一理解',
+        title: '它让我们能更一致地解释这个概念',
+        text: '相比零散笔记，这个页面更适合让团队围绕同一套逻辑来讨论和展示。',
+        pills: ['清晰', '对齐', '结构化']
+      },
+      {
+        eyebrow: '展示支持',
+        title: '它让项目更容易被讲明白',
+        text: '页面结构会先讲问题，再讲证据，最后自然过渡到原型方向。',
+        pills: ['流程感', '适合 pitch', '视觉引导']
+      },
+      {
+        eyebrow: '项目推进',
+        title: '它让整个项目看起来更完整可信',
+        text: '这样更方便我们对外说明、继续修改，也更容易让别人理解我们在做什么。',
+        pills: ['可信度', '可迭代', '团队项目']
+      }
+    ],
+    deckTitle: '交互式项目讲解页',
+    deckDesc: '通过模块切换，可以一步一步讲清楚项目逻辑。',
+    progressLabel: '整体进度',
+    moduleLabel: '模块',
+    actions: {
+      start: '先看整体结构',
+      insight: '直接看证据部分',
+      market: '打开交易网站原型 ↗',
+      prev: '← 上一步',
+      next: '下一步 →',
+      lang: 'English'
     },
-    {
-      key: 'pitch',
-      number: '03',
-      title: 'Pitch & Delivery',
-      subtitle: 'How we want to present this like a serious concept',
-      steps: [
-        {
-          type: 'content',
-          title: 'How we want to sound when we present',
-          html: `
-            <h2>We want this to feel like a thoughtful project, not just a class exercise</h2>
-            <p>The goal here is not to overload the page with theory. The goal is to help us sound clear, grounded, and realistic when we explain the concept.</p>
-            <h3>A structure that works well for us</h3>
-            <ul>
-              <li><strong>Opening</strong>: We noticed a recurring student problem.</li>
-              <li><strong>Human angle</strong>: We explain what the experience feels like for actual students.</li>
-              <li><strong>System angle</strong>: We show why the issue is bigger than one person making better choices.</li>
-              <li><strong>GLMI angle</strong>: We explain why this links to sustainability, innovation, and entrepreneurial opportunity.</li>
-              <li><strong>Next step</strong>: We present the prototype as a direction, not as a finished company.</li>
-            </ul>
-            <div class="callout success">A strong line for us is: at this stage, we are not trying to oversell a finished solution. We are showing that the problem is real, important, and worth developing further.</div>
-            <h3>Quick language cues</h3>
-            <table>
-              <tr><th>What we want to sound like</th><th>Useful phrasing</th></tr>
-              <tr><td>Thoughtful</td><td>“We want to avoid jumping too quickly into solution mode.”</td></tr>
-              <tr><td>Empathetic</td><td>“The challenge is not only practical, but also social and emotional.”</td></tr>
-              <tr><td>Grounded</td><td>“We are still refining the problem frame and testing the assumptions behind the concept.”</td></tr>
-            </table>
-          `
-        },
-        {
-          type: 'quiz',
-          title: 'Pitch logic check',
-          questions: [
-            {
-              q: 'Which line sounds more mature for our GLMI pitch?',
-              options: ['We already have the perfect solution', 'This problem should be easy to fix', 'We are focusing on defining the problem more precisely and testing key assumptions', 'People just need to try harder'],
-              answer: 2,
-              explanation: 'That line sounds more realistic, reflective, and aligned with an early-stage GLMI concept.'
-            }
-          ]
-        },
-        {
-          type: 'complete',
-          title: 'Wrap-up',
-          html: `
-            <h2>This page gives us a usable team-facing project walkthrough</h2>
-            <p>From here, we can keep refining the wording, the evidence, and the prototype connection as our GLMI project gets stronger.</p>
-            <div class="pill-row">
-              <span class="pill">Team voice</span>
-              <span class="pill">GitHub Pages ready</span>
-              <span class="pill">Linked to prototype</span>
-            </div>
-          `
-        }
-      ]
-    }
-  ]
+    moduleCard: {
+      title: '🎓 用于项目讲解',
+      text: '这个页面是项目总览入口，不是最终产品成品页。'
+    },
+    footer: 'NeighbourLoop · 项目总览页 · 用于更清楚地展示 GLMI 概念',
+    modules: [
+      {
+        key: 'problem',
+        number: '01',
+        title: '问题定义',
+        subtitle: '我们到底在解决什么学生问题？',
+        steps: [
+          {
+            type: 'content',
+            title: '为什么这个问题值得做',
+            html: `
+              <h2>我们先讲问题，而不是先讲功能</h2>
+              <p>一个更扎实的 GLMI 项目，不会一开始就展示功能，而是先说明问题为什么真实存在、为什么会持续发生、以及为什么值得被认真对待。</p>
+              <div class="callout">在我们的框架里，问题不只是“学生想买更便宜的东西”。更深层的点在于，获取、信任、便利性、时间节点和浪费这些因素一起作用，导致交换始终不顺畅。</div>
+              <h3>我们希望别人理解什么</h3>
+              <ul>
+                <li>学生在开学、搬家、换租等节点，经常需要快速找到价格更友好的生活必需品。</li>
+                <li>这些物品其实已经存在于学生群体内部，只是缺少一个顺畅的流转方式。</li>
+                <li>目前的二手交换过程容易让人觉得分散、低信任、麻烦。</li>
+                <li>这不仅增加生活成本，也带来不必要的浪费。</li>
+              </ul>
+              <table>
+                <tr><th>层次</th><th>我们怎么讲</th></tr>
+                <tr><td>表层问题</td><td>学生很难以简单、可信的方式找到合适的二手物品。</td></tr>
+                <tr><td>行为问题</td><td>很多人最后还是去买新的，因为二手流程显得不稳定、不方便。</td></tr>
+                <tr><td>系统问题</td><td>缺少一个真正围绕校园社区建立的、高信任、低门槛流转渠道。</td></tr>
+              </table>
+            `
+          },
+          {
+            type: 'note',
+            title: '📝 先写问题陈述',
+            prompt: '先写一句简短的问题定义，再补两句说明为什么它会持续存在、为什么值得解决。',
+            placeholder: '例如：学生需要负担得起的生活必需品，但校园周边的二手交换往往分散、低信任且不够方便，因此同时带来了成本压力和可避免的浪费。'
+          },
+          {
+            type: 'quiz',
+            title: '问题定义检查',
+            questions: [
+              {
+                q: '哪种 opening 更适合这种 GLMI 概念？',
+                options: ['我们做了一个功能很多的 app', '我们先识别了一个反复出现的学生问题，并希望先把问题讲清楚', '我们主要想讲商业化', '技术可以瞬间解决一切'],
+                answer: 1,
+                explanation: '先讲清楚问题，会比直接讲功能更可信，也更符合课程逻辑。'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        key: 'evidence',
+        number: '02',
+        title: '证据与洞察',
+        subtitle: '我们如何用观察和解释支持这个概念',
+        steps: [
+          {
+            type: 'content',
+            title: '什么样的证据更有说服力',
+            html: `
+              <h2>我们需要的是能连起来的证据，而不是零散例子</h2>
+              <p>更有说服力的概念，通常依靠观察、模式、解释和意义之间的连接，而不是只靠一句很大的断言。</p>
+              <ul>
+                <li><strong>观察</strong>：学生在入学和换房时，常常会面临较高的生活启动成本。</li>
+                <li><strong>模式</strong>：许多可用物品其实还在学生之间流转，只是过程不稳定。</li>
+                <li><strong>解释</strong>：问题不只是价格，还包括便利性、信任和协调成本。</li>
+                <li><strong>意义</strong>：更结构化的校园二手平台，可能同时缓解经济压力和浪费问题。</li>
+              </ul>
+              <div class="callout info">核心洞察在于，这不只是一个市场供需问题，更是特定社区里的协作和信任问题。</div>
+              <h3>我们怎么更好地用证据</h3>
+              <p>我们不是简单罗列现象，而是要把这些现象整理成一个能支撑项目方向的解释链条。</p>
+            `
+          },
+          {
+            type: 'code',
+            title: '洞察模板',
+            code: `Observation -> Pattern -> Interpretation -> Why it matters\n\nExample:\nStudents need household items quickly\n-> but second-hand exchange feels inconsistent\n-> because useful goods are scattered across informal channels\n-> so the opportunity is to create a trusted, campus-specific loop for reuse.`
+          },
+          {
+            type: 'note',
+            title: '📝 把观察改写成洞察',
+            prompt: '选一条观察，把它改写成“模式 + 解释”的形式。',
+            placeholder: '观察：学生在搬走时经常丢掉还能用的东西。\n洞察：问题不只是浪费本身，而是校园内部缺少一个简单有效的再分配机制。'
+          }
+        ]
+      },
+      {
+        key: 'delivery',
+        number: '03',
+        title: '表达方式',
+        subtitle: '我们希望别人如何理解这个概念',
+        steps: [
+          {
+            type: 'content',
+            title: '我们想呈现出的感觉',
+            html: `
+              <h2>我们希望它看起来是一个认真发展的概念，而不是夸大其词</h2>
+              <p>这个页面的目标，是帮助我们更清楚地表达：我们理解问题，也知道原型只是当前阶段的一个方向，而不是已经完成的最终答案。</p>
+              <h3>我们想传达什么</h3>
+              <ul>
+                <li>我们识别了一个真实存在的学生问题。</li>
+                <li>我们知道这个问题既有实践层面，也有系统层面。</li>
+                <li>我们把原型作为一个探索方向，而不是假装项目已经完全成熟。</li>
+                <li>我们认为它和可持续、 affordability、学生生活体验都有关联。</li>
+              </ul>
+              <div class="callout success">一个适合我们的表达是：现阶段，我们展示的不是一个已经完成的 venture，而是一个值得继续推进的、有逻辑支撑的项目方向。</div>
+              <table>
+                <tr><th>目标</th><th>更稳的说法</th></tr>
+                <tr><td>显得扎实</td><td>“我们还在继续 refining 这个概念，并测试它背后的关键假设。”</td></tr>
+                <tr><td>显得谨慎</td><td>“我们希望不要太快跳进 solution mode。”</td></tr>
+                <tr><td>显得有关联</td><td>“这个问题把成本压力、再利用和学生流动过程连成了一个系统性挑战。”</td></tr>
+              </table>
+            `
+          },
+          {
+            type: 'quiz',
+            title: '表达方式检查',
+            questions: [
+              {
+                q: '哪一句更适合这种项目页面？',
+                options: ['我们已经有完美答案了', '这个问题很容易解决', '我们正在展示一个可信的项目方向，并继续把它打磨清楚', '大家只要更努力一点就行'],
+                answer: 2,
+                explanation: '这种表达更真实、更成熟，也更适合还在发展中的项目。'
+              }
+            ]
+          },
+          {
+            type: 'complete',
+            title: '总结',
+            html: `
+              <h2>这个页面让我们能更清楚地讲项目</h2>
+              <p>接下来，我们可以继续优化概念、完善原型，并随着项目推进把这里的内容一起更新。</p>
+              <div class="pill-row">
+                <span class="pill">清楚的总览</span>
+                <span class="pill">已连接原型</span>
+                <span class="pill">适合团队展示</span>
+              </div>
+            `
+          }
+        ]
+      }
+    ]
+  }
 };
