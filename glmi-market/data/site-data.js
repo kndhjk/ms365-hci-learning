@@ -16,6 +16,14 @@ window.CAMPUS_LOOP_DATA = {
       { title: 'Sustainable angle', text: 'Extends product life and lowers waste from semester turnover.' }
     ]
   },
+  currentUser: {
+    name: 'Ming · Student buyer',
+    avatar: '🧑‍💻',
+    badge: 'Verified campus member',
+    savedSearches: 3,
+    replies: 'Reply rate 96%',
+    joined: 'Joined February 2026'
+  },
   categories: ['All', 'Textbooks', 'Electronics', 'Furniture', 'Kitchen', 'Fashion', 'Transport', 'Dorm'],
   conditions: ['Used - very good', 'Used - good', 'Used - fair'],
   campi: ['City Campus', 'Grafton', 'Engineering', 'Epsom', 'Tamaki'],
@@ -62,14 +70,14 @@ window.CAMPUS_LOOP_DATA = {
     'List once, reach the next student fast'
   ],
   listings: [
-    { id: 1, emoji: '📚', title: 'Marketing Textbook Bundle', price: 38, category: 'Textbooks', seller: 'Amy, Year 2', campus: 'City Campus', condition: 'Used - very good', pickup: 'Student Hub', posted: '2 hours ago', views: 87, desc: 'Three core business papers in one bundle, lightly highlighted, perfect for first-year students trying to cut costs.' },
-    { id: 2, emoji: '🪑', title: 'Compact Study Chair', price: 22, category: 'Furniture', seller: 'Leo, Postgrad', campus: 'Grafton', condition: 'Used - good', pickup: 'Library side gate', posted: '1 day ago', views: 54, desc: 'Lightweight desk chair, easy to move into flats or halls, still sturdy and clean.' },
-    { id: 3, emoji: '🍳', title: 'Starter Kitchen Set', price: 45, category: 'Kitchen', seller: 'Mia, Exchange', campus: 'City Campus', condition: 'Used - very good', pickup: 'Symonds Street', posted: '5 hours ago', views: 112, desc: 'Pan, pot, cutting board, plates and utensils. Great for students setting up a new flat quickly.' },
-    { id: 4, emoji: '💻', title: 'Second Monitor 24-inch', price: 95, category: 'Electronics', seller: 'Jason, Year 3', campus: 'Engineering', condition: 'Used - good', pickup: 'Engineering foyer', posted: 'Today', views: 203, desc: 'Perfect for essays, coding, or design work. Comes with HDMI cable and power cable.' },
-    { id: 5, emoji: '🚲', title: 'Campus Bike', price: 120, category: 'Transport', seller: 'Nina, Masters', campus: 'Epsom', condition: 'Used - fair', pickup: 'Epsom carpark', posted: '3 days ago', views: 76, desc: 'Reliable city bike for short commutes. Minor scratches but works well and saves bus money.' },
-    { id: 6, emoji: '🛏️', title: 'Dorm Bedding Pack', price: 28, category: 'Dorm', seller: 'Sophie, Hall resident', campus: 'City Campus', condition: 'Used - very good', pickup: 'Hall lobby', posted: '4 hours ago', views: 91, desc: 'Pillow, duvet, cover set and fitted sheet. Clean, simple, useful for fast move-ins.' },
-    { id: 7, emoji: '🎧', title: 'Noise-Cancelling Headphones', price: 72, category: 'Electronics', seller: 'Ben, Year 1', campus: 'City Campus', condition: 'Used - good', pickup: 'Science Centre', posted: 'Yesterday', views: 134, desc: 'Ideal for library sessions and noisy flats. Battery still holds well.' },
-    { id: 8, emoji: '👕', title: 'Winter Hoodie Bundle', price: 18, category: 'Fashion', seller: 'Chloe, Arts', campus: 'City Campus', condition: 'Used - good', pickup: 'Quad', posted: '6 hours ago', views: 45, desc: 'Three warm hoodies sold together. Budget-friendly and practical for Auckland weather.' }
+    { id: 1, emoji: '📚', gallery: ['📚','📝','🎒'], title: 'Marketing Textbook Bundle', price: 38, category: 'Textbooks', seller: 'Amy, Year 2', campus: 'City Campus', condition: 'Used - very good', pickup: 'Student Hub', posted: '2 hours ago', views: 87, desc: 'Three core business papers in one bundle, lightly highlighted, perfect for first-year students trying to cut costs.' },
+    { id: 2, emoji: '🪑', gallery: ['🪑','📖','🛋️'], title: 'Compact Study Chair', price: 22, category: 'Furniture', seller: 'Leo, Postgrad', campus: 'Grafton', condition: 'Used - good', pickup: 'Library side gate', posted: '1 day ago', views: 54, desc: 'Lightweight desk chair, easy to move into flats or halls, still sturdy and clean.' },
+    { id: 3, emoji: '🍳', gallery: ['🍳','🍽️','🥣'], title: 'Starter Kitchen Set', price: 45, category: 'Kitchen', seller: 'Mia, Exchange', campus: 'City Campus', condition: 'Used - very good', pickup: 'Symonds Street', posted: '5 hours ago', views: 112, desc: 'Pan, pot, cutting board, plates and utensils. Great for students setting up a new flat quickly.' },
+    { id: 4, emoji: '💻', gallery: ['💻','⌨️','🖥️'], title: 'Second Monitor 24-inch', price: 95, category: 'Electronics', seller: 'Jason, Year 3', campus: 'Engineering', condition: 'Used - good', pickup: 'Engineering foyer', posted: 'Today', views: 203, desc: 'Perfect for essays, coding, or design work. Comes with HDMI cable and power cable.' },
+    { id: 5, emoji: '🚲', gallery: ['🚲','🛞','🪖'], title: 'Campus Bike', price: 120, category: 'Transport', seller: 'Nina, Masters', campus: 'Epsom', condition: 'Used - fair', pickup: 'Epsom carpark', posted: '3 days ago', views: 76, desc: 'Reliable city bike for short commutes. Minor scratches but works well and saves bus money.' },
+    { id: 6, emoji: '🛏️', gallery: ['🛏️','🧺','🪟'], title: 'Dorm Bedding Pack', price: 28, category: 'Dorm', seller: 'Sophie, Hall resident', campus: 'City Campus', condition: 'Used - very good', pickup: 'Hall lobby', posted: '4 hours ago', views: 91, desc: 'Pillow, duvet, cover set and fitted sheet. Clean, simple, useful for fast move-ins.' },
+    { id: 7, emoji: '🎧', gallery: ['🎧','🎵','🔋'], title: 'Noise-Cancelling Headphones', price: 72, category: 'Electronics', seller: 'Ben, Year 1', campus: 'City Campus', condition: 'Used - good', pickup: 'Science Centre', posted: 'Yesterday', views: 134, desc: 'Ideal for library sessions and noisy flats. Battery still holds well.' },
+    { id: 8, emoji: '👕', gallery: ['👕','🧥','🧺'], title: 'Winter Hoodie Bundle', price: 18, category: 'Fashion', seller: 'Chloe, Arts', campus: 'City Campus', condition: 'Used - good', pickup: 'Quad', posted: '6 hours ago', views: 45, desc: 'Three warm hoodies sold together. Budget-friendly and practical for Auckland weather.' }
   ],
   fakeInbox: [
     {

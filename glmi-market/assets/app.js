@@ -1,6 +1,6 @@
 const { createApp, computed, ref } = Vue;
 const market = window.CAMPUS_LOOP_DATA;
-const STORE = 'campus-loop-market-v2';
+const STORE = 'campus-loop-market-v3';
 
 createApp({
   setup() {
@@ -16,26 +16,34 @@ createApp({
     const inboxThread = ref(saved.inboxThread || (market.fakeInbox[0]?.id ?? null));
     const toast = ref('');
     const showNotifications = ref(false);
+    const showProfileMenu = ref(false);
+    const loading = ref(false);
+    const reserveQueue = ref(saved.reserveQueue || []);
+    const soldItems = ref(saved.soldItems || []);
     const postedItems = ref(saved.postedItems || []);
+    const activeGalleryIndex = ref(0);
     const myDraft = ref(saved.myDraft || {
       title: '', price: '', category: 'Textbooks', condition: 'Used - very good', campus: 'City Campus', pickup: '', desc: ''
     });
 
     const allListings = computed(() => [...postedItems.value, ...market.listings]);
-    const savedItems = computed(() => allListings.value.filter(item => liked.value.includes(item.id)));
+    const visibleListings = computed(() => allListings.value.filter(item => !soldItems.value.includes(item.id)));
+    const savedItems = computed(() => visibleListings.value.filter(item => liked.value.includes(item.id)));
     const activeThread = computed(() => market.fakeInbox.find(t => t.id === inboxThread.value) || market.fakeInbox[0]);
     const notifications = computed(() => market.notifications.slice(0, 3));
     const activePriceRange = computed(() => market.priceRanges.find(r => r.label === priceLabel.value) || market.priceRanges[0]);
+    const myActiveListings = computed(() => postedItems.value.filter(item => !soldItems.value.includes(item.id)));
+    const mySoldListings = computed(() => postedItems.value.filter(item => soldItems.value.includes(item.id)));
+    const selectedGallery = computed(() => selected.value?.gallery || [selected.value?.emoji || '📦']);
 
     const filtered = computed(() => {
-      let items = allListings.value.filter(item => {
+      let items = visibleListings.value.filter(item => {
         const byCategory = category.value === 'All' || item.category === category.value;
         const q = query.value.trim().toLowerCase();
         const byQuery = !q || [item.title, item.category, item.desc, item.seller, item.campus].join(' ').toLowerCase().includes(q);
         const byPrice = item.price >= activePriceRange.value.min && item.price <= activePriceRange.value.max;
         return byCategory && byQuery && byPrice;
       });
-
       if (sortBy.value === 'price-low') items = [...items].sort((a, b) => a.price - b.price);
       if (sortBy.value === 'price-high') items = [...items].sort((a, b) => b.price - a.price);
       if (sortBy.value === 'popular') items = [...items].sort((a, b) => (b.views || 0) - (a.views || 0));
@@ -53,7 +61,9 @@ createApp({
         liked: liked.value,
         inboxThread: inboxThread.value,
         postedItems: postedItems.value,
-        myDraft: myDraft.value
+        myDraft: myDraft.value,
+        reserveQueue: reserveQueue.value,
+        soldItems: soldItems.value
       }));
     }
 
@@ -64,10 +74,20 @@ createApp({
       }, 2600);
     }
 
+    function fakeRefresh(message = 'Refreshing feed...') {
+      loading.value = true;
+      ping(message);
+      setTimeout(() => {
+        loading.value = false;
+        ping('Feed refreshed.');
+      }, 900);
+    }
+
     function go(next) {
       page.value = next;
       selected.value = null;
       sellerProfile.value = null;
+      showProfileMenu.value = false;
       persist();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -78,7 +98,7 @@ createApp({
       persist();
       ping(liked.value.includes(id) ? 'Saved to your shortlist.' : 'Removed from saved items.');
     }
-    function openListing(item) { selected.value = item; }
+    function openListing(item) { selected.value = item; activeGalleryIndex.value = 0; }
     function closeListing() { selected.value = null; }
     function openSeller(name) { sellerProfile.value = name; }
     function closeSeller() { sellerProfile.value = null; }
@@ -88,6 +108,16 @@ createApp({
       closeListing();
       go('inbox');
       ping('Conversation opened.');
+    }
+    function reserveItem(item) {
+      if (!reserveQueue.value.includes(item.id)) reserveQueue.value.unshift(item.id);
+      persist();
+      ping('Item reserved. Seller has been notified.');
+    }
+    function markSold(item) {
+      if (!soldItems.value.includes(item.id)) soldItems.value.unshift(item.id);
+      persist();
+      ping('Listing marked as sold.');
     }
     function fakeAction(message) { ping(message); }
     function submitListing() {
@@ -99,9 +129,13 @@ createApp({
         ping('Complete the listing fields to publish the post.');
         return;
       }
+      const emojiMap = {
+        Textbooks: '📚', Electronics: '💻', Furniture: '🪑', Kitchen: '🍳', Fashion: '👕', Transport: '🚲', Dorm: '🛏️'
+      };
       const item = {
         id: Date.now(),
-        emoji: '🛍️',
+        emoji: emojiMap[myDraft.value.category] || '🛍️',
+        gallery: [emojiMap[myDraft.value.category] || '🛍️', '✨', '📦'],
         title,
         price,
         category: myDraft.value.category,
@@ -137,7 +171,16 @@ createApp({
       inboxThread,
       notifications,
       postedItems,
+      myActiveListings,
+      mySoldListings,
       myDraft,
+      reserveQueue,
+      soldItems,
+      selectedGallery,
+      activeGalleryIndex,
+      showNotifications,
+      showProfileMenu,
+      loading,
       persist,
       go,
       setCategory,
@@ -147,8 +190,11 @@ createApp({
       openSeller,
       closeSeller,
       messageSeller,
+      reserveItem,
+      markSold,
       fakeAction,
       submitListing,
+      fakeRefresh,
       toast
     };
   },
@@ -163,7 +209,30 @@ createApp({
           <button :class="{navon: page==='inbox'}" @click="go('inbox')">Inbox</button>
           <button :class="{navon: page==='my-listings'}" @click="go('my-listings')">My listings</button>
           <button @click="showNotifications = !showNotifications">Alerts (3)</button>
+          <button @click="fakeRefresh()">Refresh</button>
+          <button class="profile-chip" @click="showProfileMenu = !showProfileMenu">{{ market.currentUser.avatar }} {{ market.currentUser.name }}</button>
           <button onclick="location.href='../glmi-showcase/'">Project story ↗</button>
+        </div>
+      </div>
+
+      <div class="profile-menu" v-if="showProfileMenu">
+        <div class="panel">
+          <div class="profile-head">
+            <div class="seller-avatar">{{ market.currentUser.avatar }}</div>
+            <div>
+              <strong>{{ market.currentUser.name }}</strong>
+              <p>{{ market.currentUser.badge }}</p>
+            </div>
+          </div>
+          <div class="pill-row">
+            <span class="pill">{{ market.currentUser.replies }}</span>
+            <span class="pill">{{ market.currentUser.savedSearches }} saved searches</span>
+            <span class="pill">{{ market.currentUser.joined }}</span>
+          </div>
+          <div class="card-actions" style="margin-top:12px">
+            <button class="ghost" @click="go('saved')">View saved items</button>
+            <button class="ghost" @click="go('my-listings')">Seller dashboard</button>
+          </div>
         </div>
       </div>
 
@@ -209,7 +278,7 @@ createApp({
             <option value="price-low">Sort by price low to high</option>
             <option value="price-high">Sort by price high to low</option>
           </select>
-          <button @click="fakeAction('Search refreshed.')">Search</button>
+          <button @click="fakeRefresh('Running local search...')">Search</button>
         </div>
       </section>
 
@@ -245,10 +314,13 @@ createApp({
         <div class="section-title">
           <div>
             <h2>Fresh listings</h2>
-            <p>{{ filtered.length }} items feel live, searchable, and saved to your own local view.</p>
+            <p>{{ filtered.length }} items feel live, searchable, reserveable, and saved to your own local view.</p>
           </div>
         </div>
-        <div class="empty-state" v-if="!filtered.length">
+        <div class="skeleton-grid" v-if="loading">
+          <div class="skeleton-card" v-for="n in 4" :key="n"></div>
+        </div>
+        <div class="empty-state" v-else-if="!filtered.length">
           <strong>No listings match this filter combination.</strong>
           <p>Try another category, widen the price range, or search more broadly.</p>
         </div>
@@ -267,11 +339,13 @@ createApp({
               <span class="pill">{{ item.category }}</span>
               <span class="pill">{{ item.condition }}</span>
               <span class="pill">{{ item.campus }}</span>
+              <span class="pill reserve-pill" v-if="reserveQueue.includes(item.id)">Reserved</span>
             </div>
             <div class="meta">Pickup: {{ item.pickup }}</div>
             <div class="meta">{{ item.desc }}</div>
             <div class="card-actions">
               <button class="save" @click="toggleLike(item.id)">{{ liked.includes(item.id) ? 'Saved ♥' : 'Save' }}</button>
+              <button class="ghost" @click="reserveItem(item)">{{ reserveQueue.includes(item.id) ? 'Reserved' : 'Reserve' }}</button>
               <button class="contact" @click="openListing(item)">View details</button>
             </div>
           </article>
@@ -308,6 +382,7 @@ createApp({
             <div class="meta">{{ item.desc }}</div>
             <div class="card-actions">
               <button class="save" @click="toggleLike(item.id)">Remove</button>
+              <button class="ghost" @click="reserveItem(item)">{{ reserveQueue.includes(item.id) ? 'Reserved' : 'Reserve' }}</button>
               <button class="contact" @click="openListing(item)">Open</button>
             </div>
           </article>
@@ -335,6 +410,7 @@ createApp({
             <li>Use specific campus pickup locations to make the listing feel trustworthy.</li>
             <li>Keep the title short and practical so students can scan fast.</li>
             <li>Reasonable pricing makes the product feel more real in a presentation.</li>
+            <li>Items published here appear in the main feed and seller dashboard immediately.</li>
           </ul>
           <div class="detail-note">Once published, the listing appears in your local “My listings” page and in the main browse feed.</div>
         </div>
@@ -374,14 +450,25 @@ createApp({
           <p>Create a listing to make the marketplace feel truly two-sided.</p>
           <button class="primary" @click="go('sell')">Create your first listing</button>
         </div>
-        <div class="grid" v-else>
-          <article class="card" v-for="item in postedItems" :key="item.id">
-            <div class="thumb">{{ item.emoji }}</div>
-            <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">{{ item.posted }}</div></div><div class="price">NZ$ {{ item.price }}</div></div>
-            <div class="pill-row"><span class="pill">{{ item.category }}</span><span class="pill">{{ item.condition }}</span><span class="pill">{{ item.campus }}</span></div>
-            <div class="meta">{{ item.desc }}</div>
-            <div class="card-actions"><button class="save" @click="fakeAction('Listing bumped to the top of local feed.')">Boost</button><button class="contact" @click="openListing(item)">Preview</button></div>
-          </article>
+        <div v-else>
+          <div class="section-subtitle">Active</div>
+          <div class="grid" style="margin-bottom:18px">
+            <article class="card" v-for="item in myActiveListings" :key="item.id">
+              <div class="thumb">{{ item.emoji }}</div>
+              <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">{{ item.posted }}</div></div><div class="price">NZ$ {{ item.price }}</div></div>
+              <div class="pill-row"><span class="pill">{{ item.category }}</span><span class="pill">{{ item.condition }}</span><span class="pill">{{ item.campus }}</span></div>
+              <div class="meta">{{ item.desc }}</div>
+              <div class="card-actions"><button class="save" @click="fakeAction('Listing bumped to the top of local feed.')">Boost</button><button class="ghost" @click="markSold(item)">Mark sold</button><button class="contact" @click="openListing(item)">Preview</button></div>
+            </article>
+          </div>
+          <div class="section-subtitle" v-if="mySoldListings.length">Sold archive</div>
+          <div class="grid" v-if="mySoldListings.length">
+            <article class="card sold-card" v-for="item in mySoldListings" :key="item.id">
+              <div class="thumb">{{ item.emoji }}</div>
+              <div class="card-top"><div><div class="title">{{ item.title }}</div><div class="meta">Completed listing</div></div><div class="price">Sold</div></div>
+              <div class="meta">{{ item.desc }}</div>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -403,21 +490,29 @@ createApp({
             <button class="close" @click="closeListing">Close</button>
           </div>
           <div class="modal-grid">
-            <div class="detail-box">{{ selected.emoji }}</div>
+            <div>
+              <div class="detail-box">{{ selectedGallery[activeGalleryIndex] }}</div>
+              <div class="gallery-strip">
+                <button class="gallery-thumb" :class="{galleryon: activeGalleryIndex===idx}" v-for="(g, idx) in selectedGallery" :key="idx" @click="activeGalleryIndex = idx">{{ g }}</button>
+              </div>
+            </div>
             <div class="detail-meta">
               <div class="detail-price">NZ$ {{ selected.price }}</div>
               <div class="pill-row">
                 <span class="pill">{{ selected.category }}</span>
                 <span class="pill">{{ selected.condition }}</span>
                 <span class="pill">Pickup: {{ selected.pickup }}</span>
+                <span class="pill reserve-pill" v-if="reserveQueue.includes(selected.id)">Reserved</span>
               </div>
               <p class="meta">{{ selected.desc }}</p>
-              <div class="detail-note">Trusted pickup feel, quick actions, visible seller cues, and lightweight feedback are what make this static marketplace feel dynamic in a presentation.</div>
+              <div class="detail-note">Trusted pickup feel, quick actions, visible seller cues, reserve states, and feedback loops are what make this static marketplace feel dynamic in a presentation.</div>
               <div class="card-actions">
                 <button class="save" @click="toggleLike(selected.id)">{{ liked.includes(selected.id) ? 'Saved ♥' : 'Save item' }}</button>
+                <button class="ghost" @click="reserveItem(selected)">{{ reserveQueue.includes(selected.id) ? 'Reserved' : 'Reserve item' }}</button>
                 <button class="contact" @click="messageSeller(selected)">Message seller</button>
               </div>
               <div class="card-actions">
+                <button class="ghost" @click="fakeAction('Checkout flow opened in demo mode.')">Checkout</button>
                 <button class="ghost" @click="fakeAction('Link copied for sharing.')">Share</button>
                 <button class="ghost" @click="fakeAction('Listing reported for review.')">Report</button>
               </div>
