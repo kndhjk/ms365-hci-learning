@@ -1,4 +1,4 @@
-const { createApp, computed, ref } = Vue;
+const { createApp, computed, ref, onMounted, onUnmounted } = Vue;
 const SOURCE = window.GLMI_SITE_DATA;
 const STORAGE_KEY = 'glmi-showcase-state-v4';
 const MARKET_URL = 'https://kndhjk.github.io/ms365-hci-learning/glmi-market/';
@@ -13,12 +13,15 @@ createApp({
     const currentStep = ref(saved.currentStep || 0);
     const notes = ref(saved.notes || {});
     const answers = ref(saved.answers || {});
+    const showBackToTop = ref(false);
 
     const moduleIndex = computed(() => data.value.modules.findIndex(m => m.key === currentModule.value));
     const moduleData = computed(() => data.value.modules[moduleIndex.value]);
     const steps = computed(() => moduleData.value.steps);
     const step = computed(() => steps.value[currentStep.value]);
     const progressPercent = computed(() => Math.round(((moduleIndex.value + (currentStep.value + 1) / steps.value.length) / data.value.modules.length) * 100));
+    const isFirstStep = computed(() => currentStep.value === 0 && moduleIndex.value === 0);
+    const isLastStep = computed(() => currentStep.value === steps.value.length - 1 && moduleIndex.value === data.value.modules.length - 1);
 
     function persist() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ language: language.value, currentModule: currentModule.value, currentStep: currentStep.value, notes: notes.value, answers: answers.value }));
@@ -30,11 +33,25 @@ createApp({
     function setNote(key, value) { notes.value[key] = value; persist(); }
     function answerKey(qi) { return `${language.value}_${currentModule.value}_${currentStep.value}_${qi}`; }
     function choose(qi, picked) { answers.value[answerKey(qi)] = picked; persist(); }
+    function resetProgress() { if (confirm(language.value === 'en' ? 'Reset all progress?' : '确定重置所有进度？')) { notes.value = {}; answers.value = {}; currentModule.value = SOURCE[language.value].modules[0].key; currentStep.value = 0; persist(); } }
 
-    return { language, data, currentModule, currentStep, moduleData, step, progressPercent, toggleLanguage, switchModule, nextStep, prevStep, setNote, notes, answers, answerKey, qrUrl: QR_URL };
+    // Keyboard navigation + back-to-top toggle
+    function handleKey(e) {
+      const tag = document.activeElement.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextStep();
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevStep();
+    }
+    function handleScroll() { showBackToTop.value = window.scrollY > 400; }
+    onMounted(() => { window.addEventListener('keydown', handleKey); window.addEventListener('scroll', handleScroll); });
+    onUnmounted(() => { window.removeEventListener('keydown', handleKey); window.removeEventListener('scroll', handleScroll); });
+
+    return { language, data, currentModule, currentStep, moduleData, step, progressPercent, isFirstStep, isLastStep, showBackToTop, toggleLanguage, switchModule, nextStep, prevStep, setNote, notes, answers, answerKey, resetProgress, qrUrl: QR_URL };
   },
   template: `
     <div class="shell">
+      <div class="back-to-top" :class="{visible: showBackToTop}" @click="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</div>
+
       <section class="hero">
         <div class="nav">
           <div class="brand"><div class="brand-badge">✨</div><div>{{ data.brand }}</div></div>
@@ -101,18 +118,30 @@ createApp({
       </section>
 
       <section class="section">
-        <div class="section-title"><div><h2>{{ data.deckTitle }}</h2><p>{{ data.deckDesc }}</p></div><div style="min-width:220px;width:280px"><div class="progress"><div :style="{width: progressPercent + '%'}"></div></div><p style="margin:8px 0 0;color:var(--muted);font-size:14px">{{ data.progressLabel }} {{ progressPercent }}%</p></div></div>
+        <div class="section-title">
+          <div><h2>{{ data.deckTitle }}</h2><p>{{ data.deckDesc }}</p></div>
+          <div style="min-width:220px;width:280px;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            <button class="ghost" style="font-size:12px;padding:3px 10px" @click="resetProgress()">{{ data.actions.reset || 'Reset' }}</button>
+            <div style="width:100%"><div class="progress"><div :style="{width: progressPercent + '%'}"></div></div></div>
+            <p style="margin:0;color:var(--muted);font-size:13px">{{ data.progressLabel }} {{ progressPercent }}%</p>
+          </div>
+        </div>
         <div class="module-layout">
           <div class="module-nav"><button class="module-btn" :class="{active: currentModule===mod.key}" v-for="mod in data.modules" :key="mod.key" @click="switchModule(mod.key)"><small>{{ data.moduleLabel }} {{ mod.number }}</small><strong>{{ mod.title }}</strong><span>{{ mod.subtitle }}</span></button></div>
           <div class="module-view">
             <div class="module-head"><div><div class="pill-row"><span class="pill">{{ moduleData.number }}</span><span class="pill">{{ moduleData.title }}</span></div><h2 style="margin:10px 0 0;font-family:'Baloo 2',cursive">{{ moduleData.subtitle }}</h2></div></div>
             <div class="step-dots"><span v-for="(s, idx) in moduleData.steps" :key="idx" :class="{on: idx===currentStep, done: idx<currentStep}"></span></div>
+            <div class="step-counter">{{ currentStep + 1 }} / {{ moduleData.steps.length }}</div>
             <div class="content" v-if="step.type==='content'" v-html="step.html"></div>
             <div class="content" v-else-if="step.type==='code'"><h2>{{ step.title }}</h2><div class="code">{{ step.code }}</div></div>
             <div class="content" v-else-if="step.type==='note'"><div class="note-box"><h4>{{ step.title }}</h4><p>{{ step.prompt }}</p><textarea :placeholder="step.placeholder" :value="notes[language + '_' + currentModule + '_' + currentStep] || ''" @input="setNote(language + '_' + currentModule + '_' + currentStep, $event.target.value)"></textarea></div></div>
             <div class="content quiz" v-else-if="step.type==='quiz'"><div class="q" v-for="(q, qi) in step.questions" :key="qi"><h4>{{ qi + 1 }}. {{ q.q }}</h4><div v-for="(opt, oi) in q.options" :key="oi" class="opt" :class="{ correct: answers[answerKey(qi)] !== undefined && oi === q.answer, wrong: answers[answerKey(qi)] === oi && oi !== q.answer }" @click="choose(qi, oi)">{{ String.fromCharCode(65 + oi) }}. {{ opt }}</div><div class="explain" v-if="answers[answerKey(qi)] !== undefined">{{ q.explanation }}</div></div></div>
             <div class="content" v-else-if="step.type==='complete'" v-html="step.html"></div>
-            <div class="step-actions"><button class="ghost" @click="prevStep">{{ data.actions.prev }}</button><button class="primary" @click="nextStep">{{ data.actions.next }}</button></div>
+            <div class="step-actions">
+              <button class="ghost" :disabled="isFirstStep" @click="prevStep" style="opacity:1;cursor:pointer">{{ data.actions.prev }}</button>
+              <button class="primary" @click="nextStep">{{ data.actions.next }}</button>
+            </div>
+            <p class="keyboard-hint">← → or J/K to navigate</p>
           </div>
         </div>
       </section>
