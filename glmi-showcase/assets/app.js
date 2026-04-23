@@ -14,6 +14,8 @@ createApp({
     const notes = ref(saved.notes || {});
     const answers = ref(saved.answers || {});
     const showBackToTop = ref(false);
+    const activeSection = ref('hero');
+    const copied = ref(false);
 
     const moduleIndex = computed(() => data.value.modules.findIndex(m => m.key === currentModule.value));
     const moduleData = computed(() => data.value.modules[moduleIndex.value]);
@@ -34,8 +36,10 @@ createApp({
     function answerKey(qi) { return `${language.value}_${currentModule.value}_${currentStep.value}_${qi}`; }
     function choose(qi, picked) { answers.value[answerKey(qi)] = picked; persist(); }
     function resetProgress() { if (confirm(language.value === 'en' ? 'Reset all progress?' : '确定重置所有进度？')) { notes.value = {}; answers.value = {}; currentModule.value = SOURCE[language.value].modules[0].key; currentStep.value = 0; persist(); } }
+    function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    function copyMarketUrl() { navigator.clipboard.writeText(MARKET_URL).then(() => { copied.value = true; setTimeout(() => copied.value = false, 2000); }); }
 
-    // Keyboard navigation + back-to-top toggle
+    // Keyboard navigation
     function handleKey(e) {
       const tag = document.activeElement.tagName.toLowerCase();
       if (tag === 'input' || tag === 'textarea') return;
@@ -43,22 +47,40 @@ createApp({
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevStep();
     }
     function handleScroll() { showBackToTop.value = window.scrollY > 400; }
-    onMounted(() => { window.addEventListener('keydown', handleKey); window.addEventListener('scroll', handleScroll); });
-    onUnmounted(() => { window.removeEventListener('keydown', handleKey); window.removeEventListener('scroll', handleScroll); });
 
-    return { language, data, currentModule, currentStep, moduleData, step, progressPercent, isFirstStep, isLastStep, showBackToTop, toggleLanguage, switchModule, nextStep, prevStep, setNote, notes, answers, answerKey, resetProgress, qrUrl: QR_URL };
+    // Section active tracking via IntersectionObserver
+    let observer;
+    onMounted(() => {
+      window.addEventListener('keydown', handleKey);
+      window.addEventListener('scroll', handleScroll);
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) activeSection.value = e.target.id; });
+      }, { threshold: 0.3 });
+      document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+    });
+    onUnmounted(() => {
+      window.removeEventListener('keydown', handleKey);
+      window.removeEventListener('scroll', handleScroll);
+      observer?.disconnect();
+    });
+
+    return { language, data, currentModule, currentStep, moduleData, step, progressPercent, isFirstStep, isLastStep, showBackToTop, activeSection, copied, toggleLanguage, switchModule, nextStep, prevStep, setNote, notes, answers, answerKey, resetProgress, scrollToSection, copyMarketUrl, qrUrl: QR_URL };
   },
   template: `
     <div class="shell">
-      <div class="back-to-top" :class="{visible: showBackToTop}" @click="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</div>
+      <div class="back-to-top" :class="{visible: showBackToTop}" @click="scrollToSection('hero')" title="Back to top">↑</div>
 
-      <section class="hero">
+      <!-- HERO / INTRO -->
+      <section class="hero" id="hero">
         <div class="nav">
-          <div class="brand"><div class="brand-badge">✨</div><div>{{ data.brand }}</div></div>
+          <div class="brand" @click="scrollToSection('hero')" style="cursor:pointer">
+            <div class="brand-badge">✨</div>
+            <div>{{ data.brand }}</div>
+          </div>
           <div class="nav-links">
-            <button class="active">{{ data.overviewCards[0].eyebrow }}</button>
-            <button>{{ data.overviewCards[1].eyebrow }}</button>
-            <button>{{ data.overviewCards[2].eyebrow }}</button>
+            <button :class="{active: activeSection==='overview'}" @click="scrollToSection('overview')">{{ data.overviewCards[0].eyebrow }}</button>
+            <button :class="{active: activeSection==='discussion'}" @click="scrollToSection('discussion')">{{ data.overviewCards[1].eyebrow }}</button>
+            <button :class="{active: activeSection==='deck'}" @click="scrollToSection('deck')">{{ data.overviewCards[2].eyebrow }}</button>
             <button @click="toggleLanguage()">{{ data.actions.lang }}</button>
           </div>
         </div>
@@ -82,19 +104,25 @@ createApp({
         </div>
       </section>
 
-      <section class="section qr-section">
+      <!-- QR DEMO -->
+      <section class="section qr-section" id="qr">
         <div class="section-title"><div><h2>{{ data.qrPanel.title }}</h2><p>{{ data.qrPanel.desc }}</p></div></div>
         <div class="qr-layout">
           <div class="qr-card">
-            <img :src="qrUrl" alt="Market prototype QR code" class="qr-image" />
+            <a :href="data.qrPanel.url" target="_blank" rel="noopener">
+              <img :src="qrUrl" alt="Market prototype QR code" class="qr-image" />
+            </a>
             <p class="qr-caption">{{ data.qrPanel.caption }}</p>
-            <a class="qr-link" :href="data.qrPanel.url" target="_blank">{{ data.qrPanel.url }}</a>
+            <div class="qr-link-row">
+              <a class="qr-link" :href="data.qrPanel.url" target="_blank">{{ data.qrPanel.url }}</a>
+              <button class="copy-btn" @click="copyMarketUrl">{{ copied ? '✓' : 'Copy' }}</button>
+            </div>
           </div>
           <div class="qr-notes">
             <div class="callout info">{{ data.qrPanel.tip }}</div>
             <div class="card-grid single-col">
-              <article class="card" v-for="row in data.showcaseFlow.steps" :key="row.title">
-                <div class="eyebrow">Flow</div>
+              <article class="card flow-card" v-for="(row, fi) in data.showcaseFlow.steps" :key="row.title" @click="scrollToSection('deck')">
+                <div class="eyebrow">Step {{ fi + 1 }}</div>
                 <h3>{{ row.title }}</h3>
                 <p>{{ row.text }}</p>
               </article>
@@ -103,21 +131,29 @@ createApp({
         </div>
       </section>
 
-      <section class="section">
+      <!-- OVERVIEW -->
+      <section class="section" id="overview">
         <div class="section-title"><div><h2>{{ data.overviewTitle }}</h2><p>{{ data.overviewDesc }}</p></div></div>
         <div class="card-grid">
-          <article class="card" v-for="card in data.overviewCards" :key="card.title"><div class="eyebrow">{{ card.eyebrow }}</div><h3>{{ card.title }}</h3><p>{{ card.text }}</p><div class="pill-row"><span class="pill" v-for="pill in card.pills" :key="pill">{{ pill }}</span></div></article>
+          <article class="card clickable-card" v-for="card in data.overviewCards" :key="card.title" @click="scrollToSection('deck')">
+            <div class="eyebrow">{{ card.eyebrow }}</div>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.text }}</p>
+            <div class="pill-row"><span class="pill" v-for="pill in card.pills" :key="pill">{{ pill }}</span></div>
+          </article>
         </div>
       </section>
 
-      <section class="section">
+      <!-- DISCUSSION -->
+      <section class="section" id="discussion">
         <div class="section-title"><div><h2>{{ data.discussionPanel.title }}</h2></div></div>
         <div class="card-grid single-col">
           <article class="card"><ul><li v-for="point in data.discussionPanel.points" :key="point">{{ point }}</li></ul></article>
         </div>
       </section>
 
-      <section class="section">
+      <!-- DECK / LEARNING MODULES -->
+      <section class="section" id="deck">
         <div class="section-title">
           <div><h2>{{ data.deckTitle }}</h2><p>{{ data.deckDesc }}</p></div>
           <div style="min-width:220px;width:280px;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
@@ -138,7 +174,7 @@ createApp({
             <div class="content quiz" v-else-if="step.type==='quiz'"><div class="q" v-for="(q, qi) in step.questions" :key="qi"><h4>{{ qi + 1 }}. {{ q.q }}</h4><div v-for="(opt, oi) in q.options" :key="oi" class="opt" :class="{ correct: answers[answerKey(qi)] !== undefined && oi === q.answer, wrong: answers[answerKey(qi)] === oi && oi !== q.answer }" @click="choose(qi, oi)">{{ String.fromCharCode(65 + oi) }}. {{ opt }}</div><div class="explain" v-if="answers[answerKey(qi)] !== undefined">{{ q.explanation }}</div></div></div>
             <div class="content" v-else-if="step.type==='complete'" v-html="step.html"></div>
             <div class="step-actions">
-              <button class="ghost" :disabled="isFirstStep" @click="prevStep" style="opacity:1;cursor:pointer">{{ data.actions.prev }}</button>
+              <button class="ghost" :disabled="isFirstStep" @click="prevStep">{{ data.actions.prev }}</button>
               <button class="primary" @click="nextStep">{{ data.actions.next }}</button>
             </div>
             <p class="keyboard-hint">← → or J/K to navigate</p>
