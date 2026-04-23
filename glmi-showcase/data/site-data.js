@@ -1,39 +1,39 @@
 window.GLMI_SITE_DATA = {
-  brand: 'GLMI Project Walkthrough',
+  brand: 'Our GLMI Project Walkthrough',
   hero: {
-    eyebrow: 'Quick intro for friends and teammates',
-    titleA: 'Hey, this is the',
+    eyebrow: 'A quick intro page for our friends and teammates',
+    titleA: 'This is the',
     titleB: 'project site',
-    titleC: 'I put together for our GLMI idea.',
-    desc: 'I made this page so you can see the logic behind our concept quickly without me having to explain everything from scratch every time. The point is not to make it look like a final startup already exists. The point is to show the problem clearly, explain why it matters, and then link you into the marketplace prototype we can talk through together.',
+    titleC: 'we made for our GLMI idea.',
+    desc: 'We built this page so people can understand our concept quickly without needing the full backstory first. It is not meant to pretend the startup is already finished. It is meant to show how we are framing the problem, why we think it matters, and how the resale marketplace prototype fits into the bigger idea.',
     stats: [
       { value: '3', label: 'core sections' },
       { value: '1', label: 'market prototype link' },
-      { value: '100%', label: 'presentation-friendly' }
+      { value: 'team', label: 'voice and framing' }
     ],
     highlights: [
-      { title: 'Why this exists', text: 'I wanted one clean place to explain what we are actually building and why.' },
-      { title: 'What to look for', text: 'Focus on the problem, the student need, and how the resale platform fits that gap.' },
-      { title: 'How to use it', text: 'Skim this page first, then jump into the market prototype when you want the product feel.' }
+      { title: 'Why we built this page', text: 'We wanted one clean place to explain what we are making and why we think it matters.' },
+      { title: 'What to focus on', text: 'Look at the problem, the student need, and the reason a campus-specific resale platform makes sense.' },
+      { title: 'How to use it', text: 'Start here for the logic, then jump to the market prototype for the product experience.' }
     ]
   },
   overviewCards: [
     {
-      eyebrow: 'For the team',
-      title: 'This page is basically my walkthrough for you all',
-      text: 'I rewrote the idea into a cleaner structure so it is easier for us to discuss, pitch, and improve together.',
-      pills: ['Clearer framing', 'Easier discussion', 'Team-friendly']
+      eyebrow: 'For our team',
+      title: 'This page gives us a shared way to explain the idea',
+      text: 'We turned our thinking into a clearer structure so it is easier to discuss, pitch, and improve together.',
+      pills: ['Shared framing', 'Team-friendly', 'Easy to explain']
     },
     {
       eyebrow: 'For presentation',
-      title: 'It helps me explain the concept step by step',
-      text: 'Instead of dumping slides or long notes, I can use this as a simple narrative path when I talk through the project.',
-      pills: ['Walkthrough', 'Narrative', 'Pitch support']
+      title: 'It helps us walk people through the concept step by step',
+      text: 'Instead of dropping people straight into slides or notes, we can use this page as a simple narrative path.',
+      pills: ['Walkthrough', 'Presentation support', 'Clearer flow']
     },
     {
       eyebrow: 'For iteration',
-      title: 'We can keep changing it as the idea gets sharper',
-      text: 'If our framing changes, if the user problem gets refined, or if the prototype evolves, this page can keep up easily.',
+      title: 'We can keep updating this as the project gets sharper',
+      text: 'If the problem framing changes, if our user insight improves, or if the prototype evolves, this page can evolve with it.',
       pills: ['Flexible', 'Editable', 'Fast to update']
     }
   ],
@@ -42,51 +42,51 @@ window.GLMI_SITE_DATA = {
       key: 'problem',
       number: '01',
       title: 'Problem Framing',
-      subtitle: '先把问题讲痛，再讲为什么值得做',
+      subtitle: 'What problem are we actually trying to solve?',
       steps: [
         {
           type: 'content',
-          title: '问题为什么成立',
+          title: 'Why this problem is worth talking about',
           html: `
-            <h2>先定义你到底在解决什么</h2>
-            <p>GLMI 的 pitch 最忌讳的是上来就给 solution。老师更想听的是：<strong>这个问题为什么重要、为什么复杂、为什么现在值得关注</strong>。</p>
-            <div class="callout">一个更像 GLMI 的表达方式是：这不是单点 inconvenience，而是一个带有 social, emotional, behavioural 和 system-level dimension 的复杂问题。</div>
-            <h3>推荐你这样讲</h3>
+            <h2>We need to define the problem before we talk about any solution</h2>
+            <p>For GLMI, the most important thing is not jumping too quickly into solution mode. What matters first is showing that the problem is real, meaningful, and complex enough to deserve serious attention.</p>
+            <div class="callout">Our framing should make it clear that this is not just a small inconvenience. It is a problem with social, behavioural, and structural dimensions.</div>
+            <h3>How we want to explain it</h3>
             <ul>
-              <li>先说目标群体是谁。</li>
-              <li>再说他们正在经历什么痛点。</li>
-              <li>再说这个痛点为什么不是简单靠个人努力就能解决。</li>
-              <li>最后补一句，这个问题和 sustainable entrepreneurship 有什么关系。</li>
+              <li>Who is affected by the problem?</li>
+              <li>What are they actually experiencing in everyday life?</li>
+              <li>Why is this not something that can be solved by individual effort alone?</li>
+              <li>Why does this connect to sustainable entrepreneurship and innovation?</li>
             </ul>
             <table>
-              <tr><th>层次</th><th>你应该讲什么</th></tr>
-              <tr><td>Surface</td><td>表面症状，比如孤独、低参与、信息断裂。</td></tr>
-              <tr><td>Behaviour</td><td>人为什么不去参加活动、不表达、不求助。</td></tr>
-              <tr><td>System</td><td>学校支持、社交结构、文化适应、语言门槛如何共同作用。</td></tr>
+              <tr><th>Layer</th><th>What we should talk about</th></tr>
+              <tr><td>Surface</td><td>The visible symptom, such as high setup costs, friction, low trust, or wasted items.</td></tr>
+              <tr><td>Behaviour</td><td>Why students do not exchange goods more easily, even when the need clearly exists.</td></tr>
+              <tr><td>System</td><td>How timing, housing turnover, trust, local information, and student budgets all interact.</td></tr>
             </table>
           `
         },
         {
           type: 'note',
-          title: '📝 Problem statement 草稿',
-          prompt: '先写一句最短的问题定义，再补两句为什么它是个“值得研究而且复杂”的问题。',
-          placeholder: '例：许多国际学生并不缺少活动信息，而是缺少能真正产生归属感的关系入口，这让“到达一个新环境”变成“长期处于边缘感”的状态。'
+          title: '📝 Draft our problem statement',
+          prompt: 'Write one short version of the problem, then add two lines explaining why it is persistent and worth solving.',
+          placeholder: 'Example: Many students need affordable second-hand essentials, but the exchange process is fragmented, inconvenient, and often low-trust, which leads to both wasted goods and unnecessary new spending.'
         },
         {
           type: 'quiz',
-          title: 'Problem framing 自测',
+          title: 'Problem framing check',
           questions: [
             {
-              q: '哪种 opening 最符合 GLMI 老师偏好？',
-              options: ['我做了一个 app，功能很多', '我观察到一个复杂而持续的社会问题，先解释问题本身', '我已经想好商业模式了', '我会用 AI 解决全部问题'],
+              q: 'Which opening fits a stronger GLMI problem pitch?',
+              options: ['We already built an app with many features', 'We observed a persistent student problem and want to explain the problem first', 'We mainly want to talk about revenue streams', 'We can solve everything with AI'],
               answer: 1,
-              explanation: 'Problem-first 才是这门课更看重的路径。'
+              explanation: 'Problem-first framing fits the course much better than jumping straight into a solution.'
             },
             {
-              q: 'Wicked problem 的意思更接近什么？',
-              options: ['很邪恶的问题', '答案唯一的问题', '牵涉多方利益、难以一次性定义和解决的问题', '只要技术够强就能快速解决的问题'],
+              q: 'What makes a problem more “wicked”?',
+              options: ['It sounds dramatic', 'It has one simple answer', 'It involves multiple causes, stakeholders, and no single clean fix', 'It only affects one person'],
               answer: 2,
-              explanation: 'Wicked problem 不是“坏”，而是复杂、相互依赖、没有简单单一解。'
+              explanation: 'A wicked problem is complex, interconnected, and difficult to solve in a single step.'
             }
           ]
         }
@@ -96,39 +96,39 @@ window.GLMI_SITE_DATA = {
       key: 'evidence',
       number: '02',
       title: 'Evidence & Insight',
-      subtitle: '把观察、访谈、课程框架串起来',
+      subtitle: 'How we connect observation, interviews, and course ideas',
       steps: [
         {
           type: 'content',
-          title: '证据不一定要很大，但一定要成链条',
+          title: 'Why the evidence has to feel connected',
           html: `
-            <h2>你要的不是“数据越多越好”，而是“证据互相支撑”</h2>
-            <p>一套可信的 GLMI pitch，通常是这样组合证据的：</p>
+            <h2>We do not need endless data, but we do need a believable chain of evidence</h2>
+            <p>A stronger GLMI pitch usually combines several kinds of evidence rather than relying on one dramatic claim.</p>
             <ul>
-              <li><strong>Observation</strong>：你看到了什么真实现象。</li>
-              <li><strong>Interview / anecdote</strong>：目标群体怎么描述他们的感受。</li>
-              <li><strong>Course concept</strong>：这个现象怎么对应 wicked problem、belonging、sustainability、serendipity。</li>
-              <li><strong>Research signal</strong>：有没有公开研究或数据说明这不是个案。</li>
+              <li><strong>Observation</strong>: What have we noticed in the real world?</li>
+              <li><strong>Interview or anecdote</strong>: How do actual students describe the issue?</li>
+              <li><strong>Course lens</strong>: How does this connect to wicked problems, belonging, sustainability, or serendipity?</li>
+              <li><strong>Research signal</strong>: Is there broader evidence that this is not just a one-off case?</li>
             </ul>
-            <div class="callout info">真正好用的一句话：I am not claiming this problem only exists because of one cause. I am arguing that multiple factors make the experience persistent and difficult to resolve.</div>
-            <h3>访谈内容怎么用</h3>
-            <p>不要把访谈写成流水账。把原话提炼成 insight，例如：</p>
+            <div class="callout info">A useful line for us is: we are not claiming there is one single cause. We are arguing that multiple factors make the problem persistent and hard to resolve.</div>
+            <h3>How we should use interview material</h3>
+            <p>Instead of repeating raw quotes, we should turn them into clearer insights.</p>
             <ul>
-              <li>“我知道有活动，但我去了也很难留下来” → 问题不只是 access，而是 social stickiness。</li>
-              <li>“大家都很忙，我不想打扰别人” → 问题里有 self-protection 和 rejection fear。</li>
+              <li>“I know where to find listings, but it still feels messy and unreliable” → the issue is not access alone, but trust and coordination.</li>
+              <li>“It is easier to buy new than to organise pickup” → the problem includes convenience, not just price.</li>
             </ul>
           `
         },
         {
           type: 'code',
-          title: 'Insight 模板',
-          code: `Observation -> Pattern -> Interpretation -> Why it matters\n\nExample:\nStudents attend orientation events\n-> but connections fade quickly\n-> because initial exposure does not become repeated, low-friction social contact\n-> so the deeper problem is not event availability, but weak belonging infrastructure.`
+          title: 'Insight template',
+          code: `Observation -> Pattern -> Interpretation -> Why it matters\n\nExample:\nStudents need cheap essentials at the start of term\n-> but many still buy new\n-> because second-hand options feel scattered, low-trust, and time-consuming\n-> so the deeper opportunity is not only lower prices, but a smoother and more trusted exchange system.`
         },
         {
           type: 'note',
-          title: '📝 访谈 insight 提炼',
-          prompt: '把一段原始观察或访谈，改写成“模式 + 含义”的形式。',
-          placeholder: '观察：学生会去活动但不持续。\nInsight：活动提供了短期接触，但没有形成低门槛、可持续的重复互动结构，所以归属感很难沉淀。'
+          title: '📝 Turn evidence into insight',
+          prompt: 'Take one observation or interview point and rewrite it as a pattern plus interpretation.',
+          placeholder: 'Observation: Students throw away useful items during move-out.\nInsight: The issue is not only waste itself, but the lack of a simple campus-based mechanism for redistribution.'
         }
       ]
     },
@@ -136,54 +136,54 @@ window.GLMI_SITE_DATA = {
       key: 'pitch',
       number: '03',
       title: 'Pitch & Delivery',
-      subtitle: '怎么讲得像一个成熟项目，而不是课堂作业',
+      subtitle: 'How we want to present this like a serious concept',
       steps: [
         {
           type: 'content',
-          title: '展示的时候怎么更像真的',
+          title: 'How we want to sound when we present',
           html: `
-            <h2>把 presentation 变成“项目说明会”</h2>
-            <p>这页的重点不是加更多理论，而是让你讲出来的时候更稳、更像真的 founder / researcher / problem framer。</p>
-            <h3>推荐结构</h3>
+            <h2>We want this to feel like a thoughtful project, not just a class exercise</h2>
+            <p>The goal here is not to overload the page with theory. The goal is to help us sound clear, grounded, and realistic when we explain the concept.</p>
+            <h3>A structure that works well for us</h3>
             <ul>
-              <li><strong>Opening</strong>：我注意到一个持续出现的问题。</li>
-              <li><strong>Human angle</strong>：这个问题在人的真实体验里是什么样。</li>
-              <li><strong>Systems angle</strong>：为什么它不是个人努力就能完全解决。</li>
-              <li><strong>GLMI angle</strong>：为什么它与 sustainable entrepreneurship / innovation 有关。</li>
-              <li><strong>Next step</strong>：我现在不是直接承诺 solution，而是继续定义问题空间并测试方向。</li>
+              <li><strong>Opening</strong>: We noticed a recurring student problem.</li>
+              <li><strong>Human angle</strong>: We explain what the experience feels like for actual students.</li>
+              <li><strong>System angle</strong>: We show why the issue is bigger than one person making better choices.</li>
+              <li><strong>GLMI angle</strong>: We explain why this links to sustainability, innovation, and entrepreneurial opportunity.</li>
+              <li><strong>Next step</strong>: We present the prototype as a direction, not as a finished company.</li>
             </ul>
-            <div class="callout success">这一句很好用：My goal at this stage is not to oversell a finished solution, but to show that the problem is real, meaningful, and worth deeper entrepreneurial exploration.</div>
-            <h3>Cheat sheet</h3>
+            <div class="callout success">A strong line for us is: at this stage, we are not trying to oversell a finished solution. We are showing that the problem is real, important, and worth developing further.</div>
+            <h3>Quick language cues</h3>
             <table>
-              <tr><th>你想达到的效果</th><th>更稳的说法</th></tr>
-              <tr><td>显得成熟</td><td>“I want to avoid jumping too quickly into solution mode.”</td></tr>
-              <tr><td>显得有同理心</td><td>“The challenge is not only practical, but also emotional and social.”</td></tr>
-              <tr><td>显得有研究意识</td><td>“At this stage I am refining the problem frame and validating assumptions.”</td></tr>
+              <tr><th>What we want to sound like</th><th>Useful phrasing</th></tr>
+              <tr><td>Thoughtful</td><td>“We want to avoid jumping too quickly into solution mode.”</td></tr>
+              <tr><td>Empathetic</td><td>“The challenge is not only practical, but also social and emotional.”</td></tr>
+              <tr><td>Grounded</td><td>“We are still refining the problem frame and testing the assumptions behind the concept.”</td></tr>
             </table>
           `
         },
         {
           type: 'quiz',
-          title: 'Pitch 逻辑检查',
+          title: 'Pitch logic check',
           questions: [
             {
-              q: '哪句话最像成熟的 GLMI pitch？',
-              options: ['我已经想到一个完美 solution', '这个问题应该很容易解决', '我当前重点是把问题定义得更准确，并验证关键假设', '只要大家更积极一点就好了'],
+              q: 'Which line sounds more mature for our GLMI pitch?',
+              options: ['We already have the perfect solution', 'This problem should be easy to fix', 'We are focusing on defining the problem more precisely and testing key assumptions', 'People just need to try harder'],
               answer: 2,
-              explanation: '这更符合 problem exploration 阶段。'
+              explanation: 'That line sounds more realistic, reflective, and aligned with an early-stage GLMI concept.'
             }
           ]
         },
         {
           type: 'complete',
-          title: '完成页',
+          title: 'Wrap-up',
           html: `
-            <h2>这套 GLMI 页面骨架已经能直接用了</h2>
-            <p>接下来你只需要把自己的具体 problem、引用、访谈和课程概念继续往里填，就能很快变成一个像真的项目展示页。</p>
+            <h2>This page gives us a usable team-facing project walkthrough</h2>
+            <p>From here, we can keep refining the wording, the evidence, and the prototype connection as our GLMI project gets stronger.</p>
             <div class="pill-row">
-              <span class="pill">GitHub Pages Ready</span>
-              <span class="pill">Vue Static</span>
-              <span class="pill">GLMI-friendly</span>
+              <span class="pill">Team voice</span>
+              <span class="pill">GitHub Pages ready</span>
+              <span class="pill">Linked to prototype</span>
             </div>
           `
         }
