@@ -110,6 +110,7 @@ createApp({
             <div class="hero-actions">
               <button class="cta" @click="switchModule(data.modules[0].key)">开始看结构</button>
               <button class="secondary-btn" @click="switchModule(data.modules[1].key)">直接看 insight</button>
+              <button class="secondary-btn" onclick="location.href='../glmi-market/'">Open resale prototype ↗</button>
             </div>
             <div class="hero-stats">
               <div class="stat" v-for="item in data.hero.stats" :key="item.label">
